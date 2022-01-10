@@ -25,6 +25,8 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.table.*;
 import javax.xml.crypto.Data;
+import java.awt.Component;
+
 
 public class MainWindow {
 
@@ -63,36 +65,36 @@ public class MainWindow {
 		frame.setBounds(100, 100, 1122, 614);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new BorderLayout(0, 0));
-		
+
 		JPanel panel = new JPanel();
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
-		
+
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
 		panel_1.setBounds(306, 6, 591, 574);
 		panel_1.setLayout(new BorderLayout());
 		panel.add(panel_1);
-		
+
 		// Initialize table
 		tableModel = new DefaultTableModel();
 
 		Database.getProducts();
-		
+
 		table = new JTable(tableModel);
 		table.setFillsViewportHeight(true);
 		JScrollPane tableContainer = new JScrollPane(table);
 		tableContainer.setViewportView(table);
 
 		panel_1.add(tableContainer, BorderLayout.CENTER);
-		
+
 		JPanel panel_2 = new JPanel();
-		panel_2.setBackground(SystemColor.activeCaption);
+		panel_2.setBackground(Color.WHITE);
 		panel_2.setBounds(6, 6, 288, 574);
 		panel.add(panel_2);
-		panel_2.setLayout(new GridLayout(0, 1, 0, 10));
+		panel_2.setLayout(new GridLayout(0, 1, 0, 20));
 		panel_2.setOpaque(true);
-		
+
 		JButton btnNewButton_1 = new JButton("Produkty");
 		btnNewButton_1.setBorder(UIManager.getBorder("Button.border"));
 		btnNewButton_1.setBackground(new Color(205, 133, 63));
@@ -103,7 +105,7 @@ public class MainWindow {
 			}
 		});
 		panel_2.add(btnNewButton_1);
-		
+
 		JButton btnNewButton_2 = new JButton("Pracownicy");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -113,7 +115,7 @@ public class MainWindow {
 		btnNewButton_2.setBackground(new Color(205, 133, 63));
 		btnNewButton_2.setOpaque(true);
 		panel_2.add(btnNewButton_2);
-		
+
 		JButton btnNewButton = new JButton("Zamówienia");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -123,7 +125,7 @@ public class MainWindow {
 		btnNewButton.setBackground(new Color(205, 133, 63));
 		btnNewButton.setOpaque(true);
 		panel_2.add(btnNewButton);
-		
+
 		JButton btnNewButton_3 = new JButton("Klienci");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -133,20 +135,42 @@ public class MainWindow {
 		btnNewButton_3.setBackground(new Color(205, 133, 63));
 		btnNewButton_3.setOpaque(true);
 		panel_2.add(btnNewButton_3);
-		
+
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(909, 6, 164, 574);
 		panel.add(panel_3);
 		
-		JButton addButton = new JButton("Dodaj");
+				JButton addButton = new JButton("Dodaj");
+				addButton.setBounds(6, 111, 152, 41);
+				addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+				addButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+						frame.setEnabled(false);
+						AddDialog.main(null);
+						frame.setEnabled(true);
+					}
+				});
+				panel_3.setLayout(null);
+				panel_3.add(addButton);
 		
 		JButton deleteButton = new JButton("Usuń");
-		
-		JButton editButton = new JButton("Edytuj");
-		FlowLayout fl_panel_3 = new FlowLayout(FlowLayout.CENTER, 5, 5);
-		panel_3.setLayout(fl_panel_3);
-		panel_3.add(addButton);
+		deleteButton.setBounds(6, 191, 152, 41);
+		deleteButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
 		panel_3.add(deleteButton);
-		panel_3.add(editButton);
+		
+				JButton editButton = new JButton("Edytuj");
+				editButton.setBounds(6, 271, 152, 41);
+				editButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						
+					}
+				});
+				panel_3.add(editButton);
 	}
+
 }
