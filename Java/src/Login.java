@@ -110,7 +110,7 @@ public class Login extends JFrame {
 				Database.connectToDb();
 		
 				if(Database.login(user, pass)){
-						JOptionPane.showMessageDialog(getContentPane(), "Pomyślnie zalogowano!");
+						// JOptionPane.showMessageDialog(getContentPane(), "Pomyślnie zalogowano!");
 						userLoged = true;
 						frame.setVisible(false);
 						MainWindow mainWin = new MainWindow();

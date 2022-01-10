@@ -75,43 +75,154 @@ public class Database {
 			 return false;
 		}
 
-		public static Vector<Vector<String>> getProducts(){
+		public static void getProducts(){
 			try {
-				Vector<Vector<String>> data = new Vector<Vector<String>>();
-				PreparedStatement pst = con.prepareStatement("SELECT P.PRODUCT_NAME, P.DESCRIPTION, W.WAREHOUSE_NAME FROM Project.PRODUCTS P LEFT JOIN Project.PRODUCTS_IN_WAREHOUSES PW ON P.PRODUCT_ID = PW.PRODUCT_ID LEFT JOIN Project.WAREHOUSES W ON W.WAREHOUSE_ID = PW.WAREHOUSE_ID ORDER BY WAREHOUSE_NAME;", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+
+				PreparedStatement pst = con.prepareStatement("SELECT * FROM PRODUCTS;", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
 				ResultSet rs = pst.executeQuery();
-				System.out.println("DUPA");
+				MainWindow.tableModel.setRowCount(0);
 				while (rs.next())  {
-						System.out.println("DUPA");
-					Vector<String> dataRow = new Vector<String>();
+
 					String product_name = rs.getString("product_name");
 					String description = rs.getString("description");
-					String warehouse_name = "";
-		   			if(!product_name.equals(null) && !description.equals(null) && !warehouse_name.equals(null) ){
-						dataRow.add(product_name);
-						dataRow.add(description);
-						dataRow.add(warehouse_name);
-						System.out.println(dataRow.size());
-						if(dataRow.size()==3){
-							data.add(dataRow);
-							System.out.println("Data added");
-						}
-						System.out.println(product_name + "\t" + description);
-					   }
-		            					
+					String warehouse_name = rs.getString("warehouse_name");
 
+					// add header of the table
+					String header[] = new String[] { "NAZWA PRODUKTU", "OPIS", "MAGAZYN" };
+
+					// add header to the table model     
+					MainWindow.tableModel.setColumnIdentifiers(header);
+
+					MainWindow.tableModel.addRow(new String[]{product_name, description, warehouse_name});
+					MainWindow.tableModel.fireTableDataChanged();
+					
 		        }
 				
 					
 				rs.close();
 				pst.close();
-				return data;
 				
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			return null;
 		}
 
+
+	public static void getEmployees(){
+		try {
+
+				PreparedStatement pst = con.prepareStatement("SELECT * FROM EMPLOYEES;", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+				ResultSet rs = pst.executeQuery();
+				MainWindow.tableModel.setRowCount(0);
+				while (rs.next())  {
+					Vector<String> dataRow = new Vector<String>();
+					String first_name = rs.getString("first_name");
+					String last_name = rs.getString("last_name");
+					String warehouse_name = rs.getString("warehouse_name");
+
+					// add header of the table
+					String header[] = new String[]{ "IMIĘ", "NAZWISKO", "MAGAZYN" };
+
+					// add header to the table model     
+					MainWindow.tableModel.setColumnIdentifiers(header);
+
+
+					
+					MainWindow.tableModel.addRow(new String[]{first_name, last_name, warehouse_name});
+					MainWindow.tableModel.fireTableDataChanged();
+					
+		        }
+				
+					
+				rs.close();
+				pst.close();
+				
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+
+
+	public static void getClients(){
+		try {
+			Vector<Vector<String>> data = new Vector<Vector<String>>();
+			PreparedStatement pst = con.prepareStatement("SELECT * FROM CLIENTS;", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs = pst.executeQuery();
+			MainWindow.tableModel.setRowCount(0);
+			while (rs.next())  {
+				Vector<String> dataRow = new Vector<String>();
+				String first_name = rs.getString("first_name");
+				String last_name = rs.getString("last_name");
+				String phone = rs.getString("phone");
+				String address = rs.getString("address");
+				String email = rs.getString("email");
+				String credit = rs.getString("credit");
+
+				// add header of the table
+				String header[] = new String[] { "IMIĘ", "NAZWISKO","TELEFON", "EMAIL", "ADRES", "KREDYT" };
+
+				// add header to the table model     
+				MainWindow.tableModel.setColumnIdentifiers(header);
+				// add data to rows of the table
+				dataRow.add(first_name);
+				dataRow.add(last_name);
+				dataRow.add(phone);
+				dataRow.add(address);
+				dataRow.add(email);
+				dataRow.add(credit);
+				
+		
+				data.add(dataRow);
+				
+				MainWindow.tableModel.addRow(new String[]{first_name, last_name, phone, address, email, credit});
+				MainWindow.tableModel.fireTableDataChanged();
+				
+			}
+			
+				
+			rs.close();
+			pst.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
+
+	public static void getOrders(){
+		try {
+
+			PreparedStatement pst = con.prepareStatement("SELECT * FROM Orders;", ResultSet.TYPE_SCROLL_SENSITIVE,ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs = pst.executeQuery();
+			MainWindow.tableModel.setRowCount(0);
+			while (rs.next())  {
+
+				String first_name = rs.getString("number");
+				String last_name = rs.getString("date");
+				String phone = rs.getString("total_amount");
+				String address = rs.getString("status");
+
+				// add header of the table
+				String header[] = new String[] { "NUMER ZAMÓWIENIA", "DATA WYSTAWIENIA", "KWOTA", "STATUS" };
+
+				// add header to the table model     
+				MainWindow.tableModel.setColumnIdentifiers(header);
+				
+				MainWindow.tableModel.addRow(new String[]{first_name, last_name, phone, address});
+				MainWindow.tableModel.fireTableDataChanged();
+				
+			}
+			
+				
+			rs.close();
+			pst.close();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+}

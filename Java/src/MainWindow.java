@@ -1,5 +1,5 @@
 import java.awt.EventQueue;
-import java.util.*;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -16,13 +16,22 @@ import java.awt.Color;
 import java.awt.SystemColor;
 import javax.swing.UIManager;
 import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
-
+import java.awt.FlowLayout;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
+import javax.swing.table.*;
+import javax.xml.crypto.Data;
 
 public class MainWindow {
 
 	private JFrame frame;
 	private JTable table;
+	public static DefaultTableModel tableModel;
+
 	/**
 	 * Launch the application.
 	 */
@@ -60,12 +69,22 @@ public class MainWindow {
 		panel.setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
-		panel_1.setBounds(306, 6, 765, 574);
+		panel_1.setBackground(Color.WHITE);
+		panel_1.setBounds(306, 6, 591, 574);
+		panel_1.setLayout(new BorderLayout());
 		panel.add(panel_1);
-		panel_1.setLayout(new GridLayout(0, 1, 0, 0));
 		
-		table = new JTable(new DefaultTableModel(new Object[]{"Name", "Description", "Warehouse"},3));
-		panel_1.add(table);
+		// Initialize table
+		tableModel = new DefaultTableModel();
+
+		Database.getProducts();
+		
+		table = new JTable(tableModel);
+		table.setFillsViewportHeight(true);
+		JScrollPane tableContainer = new JScrollPane(table);
+		tableContainer.setViewportView(table);
+
+		panel_1.add(tableContainer, BorderLayout.CENTER);
 		
 		JPanel panel_2 = new JPanel();
 		panel_2.setBackground(SystemColor.activeCaption);
@@ -80,20 +99,7 @@ public class MainWindow {
 		btnNewButton_1.setOpaque(true);
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
-				DefaultTableModel model = (DefaultTableModel) table.getModel();
-				model.setRowCount(0);
-				Vector<Vector<String>> data = Database.getProducts();
-				System.out.println(data);
-				for(int i=0; i<data.size();++i){
-									System.out.println("Loop");
-					model.addRow(new String[]{data.get(i).get(0).toString(), data.get(i).get(1).toString(), data.get(i).get(2).toString()});
-					System.out.println(data.get(i).get(0).toString()+ data.get(i).get(1).toString()+ data.get(i).get(2).toString());
-
-				}
-
-				model.fireTableDataChanged();
-				System.out.println("After Set model" +  table.getRowCount());
+				Database.getProducts();
 			}
 		});
 		panel_2.add(btnNewButton_1);
@@ -101,7 +107,7 @@ public class MainWindow {
 		JButton btnNewButton_2 = new JButton("Pracownicy");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
+				Database.getEmployees();
 			}
 		});
 		btnNewButton_2.setBackground(new Color(205, 133, 63));
@@ -111,7 +117,7 @@ public class MainWindow {
 		JButton btnNewButton = new JButton("Zamówienia");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				Database.getOrders();
 			}
 		});
 		btnNewButton.setBackground(new Color(205, 133, 63));
@@ -121,10 +127,26 @@ public class MainWindow {
 		JButton btnNewButton_3 = new JButton("Klienci");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Database.getClients();
 			}
 		});
 		btnNewButton_3.setBackground(new Color(205, 133, 63));
 		btnNewButton_3.setOpaque(true);
 		panel_2.add(btnNewButton_3);
+		
+		JPanel panel_3 = new JPanel();
+		panel_3.setBounds(909, 6, 164, 574);
+		panel.add(panel_3);
+		
+		JButton addButton = new JButton("Dodaj");
+		
+		JButton deleteButton = new JButton("Usuń");
+		
+		JButton editButton = new JButton("Edytuj");
+		FlowLayout fl_panel_3 = new FlowLayout(FlowLayout.CENTER, 5, 5);
+		panel_3.setLayout(fl_panel_3);
+		panel_3.add(addButton);
+		panel_3.add(deleteButton);
+		panel_3.add(editButton);
 	}
 }
