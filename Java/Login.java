@@ -19,13 +19,14 @@ import java.awt.Component;
 import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JPasswordField;
 
 @SuppressWarnings("serial")
 public class Login extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField usernameTextField;
-	private JTextField passwordTextField;
+	private JPasswordField passwordTextField;
 	private static boolean userLoged = false;
 	private static Login frame;
 
@@ -52,7 +53,7 @@ public class Login extends JFrame {
 	 */
 	public Login() {
 
-		setTitle("Warehouse Login");
+		setTitle("Warehouse Panel Logowania");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -80,7 +81,7 @@ public class Login extends JFrame {
 		panel_1.setBackground(new Color(192, 192, 192));
 		panel_1.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("Username");
+		JLabel lblNewLabel = new JLabel("Login");
 		lblNewLabel.setBounds(19, 97, 59, 26);
 		panel_1.add(lblNewLabel);
 
@@ -89,11 +90,11 @@ public class Login extends JFrame {
 		panel_1.add(usernameTextField);
 		usernameTextField.setColumns(10);
 
-		JLabel lblPassword = new JLabel("Password");
+		JLabel lblPassword = new JLabel("Hasło");
 		lblPassword.setBounds(19, 134, 59, 26);
 		panel_1.add(lblPassword);
 
-		passwordTextField = new JTextField();
+		passwordTextField = new JPasswordField();
 		passwordTextField.setColumns(10);
 		passwordTextField.setBounds(84, 134, 130, 26);
 		panel_1.add(passwordTextField);
@@ -103,11 +104,11 @@ public class Login extends JFrame {
 		contentPane.add(label_1);
 		contentPane.add(panel_1);
 
-		JButton signinButton = new JButton("Singin");
+		JButton signinButton = new JButton("Zaloguj");
 		signinButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String user = usernameTextField.getText();
-				String pass = passwordTextField.getText();
+				String pass = String.valueOf(passwordTextField.getPassword());
 
 				Database.connectToDb();
 

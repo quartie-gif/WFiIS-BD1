@@ -222,16 +222,17 @@ public class Database {
 
 	public static Vector<String> getCategories() {
 		try {
-			
-			PreparedStatement pst = con.prepareStatement("SELECT * FROM PRODUCT_CATEGORIES;", ResultSet.TYPE_SCROLL_SENSITIVE,
+
+			PreparedStatement pst = con.prepareStatement("SELECT * FROM PRODUCT_CATEGORIES;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs = pst.executeQuery();
-			Vector<String> comboBoxItems=new Vector<String>();
+			Vector<String> comboBoxItems = new Vector<String>();
 			while (rs.next()) {
 
 				comboBoxItems.add(rs.getString("Category_name"));
 			}
-			
+
 			rs.close();
 			pst.close();
 			return comboBoxItems;
@@ -245,16 +246,18 @@ public class Database {
 
 	public static Vector<String> getWarehouses() {
 		try {
-			
-			PreparedStatement pst = con.prepareStatement("SELECT * FROM WAREHOUSES_WTIH_LOCATIONS;", ResultSet.TYPE_SCROLL_SENSITIVE,
+
+			PreparedStatement pst = con.prepareStatement("SELECT * FROM WAREHOUSES_WITH_LOCATIONS;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs = pst.executeQuery();
-			Vector<String> comboBoxItems=new Vector<String>();
+			Vector<String> comboBoxItems = new Vector<String>();
 			while (rs.next()) {
-				String warehouse_name = rs.getString("warehouse_name");				comboBoxItems.add(warehouse_name);
+				String warehouse_name = rs.getString("warehouse_name");
+				comboBoxItems.add(warehouse_name);
 				System.out.println(warehouse_name);
 			}
-			
+
 			rs.close();
 			pst.close();
 			return comboBoxItems;
@@ -266,56 +269,91 @@ public class Database {
 		}
 	}
 
-	// public static void addOrder() {
-	// 	try {
-
-	// 		PreparedStatement pst = con.prepareStatement("SELECT * FROM Orders;", ResultSet.TYPE_SCROLL_SENSITIVE,
-	// 				ResultSet.CONCUR_UPDATABLE);
-	// 		ResultSet rs = pst.executeQuery();
-	// 		MainWindow.tableModel.setRowCount(0);
-	// 		while (rs.next()) {
-
-	// 			String first_name = rs.getString("number");
-	// 			String last_name = rs.getString("date");
-	// 			String phone = rs.getString("total_amount");
-	// 			String address = rs.getString("status");
-
-	// 			// add header of the table
-	// 			String header[] = new String[] { "NUMER ZAMÓWIENIA", "DATA WYSTAWIENIA", "KWOTA", "STATUS" };
-
-	// 			// add header to the table model
-	// 			MainWindow.tableModel.setColumnIdentifiers(header);
-
-	// 			MainWindow.tableModel.addRow(new String[] { first_name, last_name, phone, address });
-	// 			MainWindow.tableModel.fireTableDataChanged();
-	// 		}
-
-	// 		rs.close();
-	// 		pst.close();
-
-	// 	} catch (SQLException e) {
-	// 		// TODO Auto-generated catch block
-	// 		e.printStackTrace();
-	// 	}
-	// }
-		public static void addProduct(String name, String description, String warehouse, int categoryId, int price, int cost) {
+	public static void addEmployee(String firstName, String lastName, String phone, String email, String jobTitle, int warehouseId) {
 		try {
-			
-			int productId = MainWindow.tableModel.getRowCount();
-			PreparedStatement pst = con.prepareStatement("INSERT INTO Project.PRODUCTS(PRODUCT_ID, CATEGORY_ID, PRODUCT_NAME, DESCRIPTION, COST, PRICE) VALUES(?,?, ?, ?, ?, ?); ", ResultSet.TYPE_SCROLL_SENSITIVE,
+
+			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM (SELECT * FROM Employees)as Employees;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs;
+			rs = pst.executeQuery();
+			int employeeId=1;
+			while (rs.next()) {
+				employeeId = rs.getInt("count") + 1;
+			}
+			rs.close();
+			pst = con.prepareStatement(
+					"INSERT INTO Project.EMPLOYEES(EMPLOYEE_ID, FIRST_NAME, LAST_NAME, PHONE, EMAIL, JOB_TITLE) VALUES(?, ?, ?, ?, ?, ?); ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 
+			pst.setInt(1, employeeId);
+			pst.setString(2, firstName);
+			pst.setString(3, lastName);
+			pst.setString(4, phone);
+			pst.setString(5, email);
+			pst.setString(6, jobTitle);
+			pst.executeUpdate();
 
-				pst.setInt(1, productId);
-				pst.setInt(2, categoryId + 1);
-				pst.setString(3, name);
-				pst.setString(4, description);
-				pst.setFloat(5, cost);
-				pst.setFloat(6, price);
-				pst.executeUpdate();
-				
-				MainWindow.tableModel.fireTableDataChanged();
+			pst = con.prepareStatement(
+					"INSERT INTO Project.EMPLOYEES_IN_WAREHOUSES(EMPLOYEE_ID, WAREHOUSE_ID) VALUES(?, ?); ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
 
+			pst.setInt(1, employeeId);
+			pst.setInt(2, warehouseId + 1);
+			pst.executeUpdate();
+
+			MainWindow.tableModel.fireTableDataChanged();
+
+			pst.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void addProduct(String name, String description, int warehouseId, int categoryId, int price,
+			int cost, int quantity) {
+		try {
+
+			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM (SELECT * FROM Products)as Products;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs;
+			rs = pst.executeQuery();
+			int productId=1;
+			while (rs.next()) {
+				productId = rs.getInt("count") + 1;
+			}
+			rs.close();
+
+			pst = con.prepareStatement(
+					"INSERT INTO Project.PRODUCTS(PRODUCT_ID, CATEGORY_ID, PRODUCT_NAME, DESCRIPTION, COST, PRICE) VALUES(?, ?, ?, ?, ?, ?); ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+			System.out.println("Category index:" + warehouseId);
+			pst.setInt(1, productId);
+			pst.setInt(2, categoryId+1);
+			pst.setString(3, name);
+			pst.setString(4, description);
+			pst.setFloat(5, cost);
+			pst.setFloat(6, price);
+			pst.executeUpdate();
+
+			pst = con.prepareStatement(
+					"INSERT INTO Project.PRODUCTS_IN_WAREHOUSES(PRODUCT_ID, WAREHOUSE_ID, QUANTITY) VALUES(?, ?, ?); ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+			pst.setInt(1, productId);
+			pst.setInt(2, warehouseId + 1);
+			pst.setInt(3, quantity);
+			pst.executeUpdate();
+
+			MainWindow.tableModel.fireTableDataChanged();
 
 			pst.close();
 

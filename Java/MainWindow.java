@@ -27,7 +27,6 @@ import javax.swing.table.*;
 import javax.xml.crypto.Data;
 import java.awt.Component;
 
-
 public class MainWindow {
 
 	private JFrame frame;
@@ -139,21 +138,21 @@ public class MainWindow {
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(909, 6, 164, 574);
 		panel.add(panel_3);
-		
-				JButton addButton = new JButton("Dodaj");
-				addButton.setBounds(6, 111, 152, 41);
-				addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
-				addButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						
-						frame.setEnabled(false);
-						AddDialog.main(null);
-						frame.setEnabled(true);
-					}
-				});
-				panel_3.setLayout(null);
-				panel_3.add(addButton);
-		
+
+		JButton addButton = new JButton("Dodaj");
+		addButton.setBounds(6, 111, 152, 41);
+		addButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+		addButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+				frame.setEnabled(false);
+				AddDialog.main(null);
+				frame.setEnabled(true);
+			}
+		});
+		panel_3.setLayout(null);
+		panel_3.add(addButton);
+
 		JButton deleteButton = new JButton("Usuń");
 		deleteButton.setBounds(6, 191, 152, 41);
 		deleteButton.addActionListener(new ActionListener() {
@@ -162,15 +161,15 @@ public class MainWindow {
 			}
 		});
 		panel_3.add(deleteButton);
-		
-				JButton editButton = new JButton("Edytuj");
-				editButton.setBounds(6, 271, 152, 41);
-				editButton.addActionListener(new ActionListener() {
-					public void actionPerformed(ActionEvent e) {
-						
-					}
-				});
-				panel_3.add(editButton);
+
+		JButton editButton = new JButton("Edytuj");
+		editButton.setBounds(6, 271, 152, 41);
+		editButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+
+			}
+		});
+		panel_3.add(editButton);
 	}
 
 }
