@@ -27,11 +27,6 @@ public class AddDialog extends JDialog {
 	private static JTextField productDescriptionTextField;
 	private static JTextField productPriceTextField;
 	private static JTextField productCostTextField;
-	public static JComboBox<String> productCategoryComboBox;
-	public static JComboBox<String> productWarehouseComboBox;
-	public static JComboBox<String> employeeJobTitleComboBox;
-	public static JComboBox<String> employeeWarehouseComboBox;
-	public static JTabbedPane tabbedPane;
 	private JTextField productQuantityTextField;
 	private JTextField employeeFirstNameTextField;
 	private JTextField employeeLastNameTextField;
@@ -46,6 +41,11 @@ public class AddDialog extends JDialog {
 	private JTextField clientLastNameTextField;
 	private JTextField clientFirstNameTextField;
 	private JTextField clientAddressTextField;
+	public static JComboBox<String> productCategoryComboBox;
+	public static JComboBox<String> productWarehouseComboBox;
+	public static JComboBox<String> employeeJobTitleComboBox;
+	public static JComboBox<String> employeeWarehouseComboBox;
+	public static JTabbedPane tabbedPane;
 
 	/**
 	 * Launch the application.
@@ -374,10 +374,10 @@ public class AddDialog extends JDialog {
 						employeeWarehouseComboBox.getSelectedIndex());
 						break;
 					case 2:
-						// code block
+						
 						break;
 					case 3:
-						// code block
+						Database.addClient(clientFirstNameTextField.getText(), clientLastNameTextField.getText(), clientPhoneTextField.getText(), clientAddressTextField.getText(), clientEmailTextField.getText());
 						break;
 					default:
 						System.out.println("Wrong logic!");

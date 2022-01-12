@@ -32,6 +32,7 @@ public class MainWindow {
 	private JFrame frame;
 	private JTable table;
 	public static DefaultTableModel tableModel;
+	public static String lastClickedButton;
 
 	/**
 	 * Launch the application.
@@ -100,6 +101,7 @@ public class MainWindow {
 		btnNewButton_1.setOpaque(true);
 		btnNewButton_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				lastClickedButton = "Produkty";
 				Database.getProducts();
 			}
 		});
@@ -108,6 +110,7 @@ public class MainWindow {
 		JButton btnNewButton_2 = new JButton("Pracownicy");
 		btnNewButton_2.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				lastClickedButton = "Pracownicy";
 				Database.getEmployees();
 			}
 		});
@@ -118,6 +121,7 @@ public class MainWindow {
 		JButton btnNewButton = new JButton("Zamówienia");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				lastClickedButton = "Zmówienia";
 				Database.getOrders();
 			}
 		});
@@ -128,6 +132,7 @@ public class MainWindow {
 		JButton btnNewButton_3 = new JButton("Klienci");
 		btnNewButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				lastClickedButton = "Klienci";
 				Database.getClients();
 			}
 		});
@@ -157,7 +162,24 @@ public class MainWindow {
 		deleteButton.setBounds(6, 191, 152, 41);
 		deleteButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				int row = table.getSelectedRow() + 1;
+				switch (lastClickedButton) {
+					case "Produkty":
+						// code block
+						break;
+					case "Pracownicy":
+						// code block
+						break;
+					case "Zamówienia":
+						// code block
+						break;
+					case "Klienci":
+						Database.deleteClient(row);
+						tableModel.removeRow(row - 1); //dynamic delete of row
+						break;
+					default:
+						System.out.println("xxxx");
+				}
 			}
 		});
 		panel_3.add(deleteButton);

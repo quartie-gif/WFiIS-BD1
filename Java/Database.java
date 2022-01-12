@@ -269,7 +269,8 @@ public class Database {
 		}
 	}
 
-	public static void addEmployee(String firstName, String lastName, String phone, String email, String jobTitle, int warehouseId) {
+	public static void addEmployee(String firstName, String lastName, String phone, String email, String jobTitle,
+			int warehouseId) {
 		try {
 
 			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM (SELECT * FROM Employees)as Employees;",
@@ -277,7 +278,7 @@ public class Database {
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs;
 			rs = pst.executeQuery();
-			int employeeId=1;
+			int employeeId = 1;
 			while (rs.next()) {
 				employeeId = rs.getInt("count") + 1;
 			}
@@ -323,7 +324,7 @@ public class Database {
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs;
 			rs = pst.executeQuery();
-			int productId=1;
+			int productId = 1;
 			while (rs.next()) {
 				productId = rs.getInt("count") + 1;
 			}
@@ -336,7 +337,7 @@ public class Database {
 
 			System.out.println("Category index:" + warehouseId);
 			pst.setInt(1, productId);
-			pst.setInt(2, categoryId+1);
+			pst.setInt(2, categoryId + 1);
 			pst.setString(3, name);
 			pst.setString(4, description);
 			pst.setFloat(5, cost);
@@ -353,6 +354,8 @@ public class Database {
 			pst.setInt(3, quantity);
 			pst.executeUpdate();
 
+
+
 			MainWindow.tableModel.fireTableDataChanged();
 
 			pst.close();
@@ -362,4 +365,80 @@ public class Database {
 			e.printStackTrace();
 		}
 	}
+
+	public static void addClient(String firstName, String lastName, String phone, String address, String email) {
+		try {
+
+			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM (SELECT * FROM Clients)as Clients;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs;
+			rs = pst.executeQuery();
+			int clientId = 1;
+
+			while (rs.next()) {
+				clientId = rs.getInt("count") + 1;
+			}
+
+			int contactId = clientId;
+
+			rs.close();
+
+			pst = con.prepareStatement(
+					"INSERT INTO Project.CUSTOMERS(CUSTOMER_ID, CREDIT) VALUES (?, 0); ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+			pst.setInt(1, clientId);
+			pst.executeUpdate();
+
+			pst = con.prepareStatement(
+					"INSERT INTO Project.CONTACTS(CONTACT_ID, CUSTOMER_ID, FIRST_NAME, LAST_NAME, PHONE, ADDRESS, EMAIL) VALUES (?, ?, ?, ?, ?, ?, ?); ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+			System.out.println("Contact index:" + contactId);
+			System.out.println("Client index:" + clientId);
+			pst.setInt(1, contactId);
+			pst.setInt(2, clientId);
+			pst.setString(3, firstName);
+			pst.setString(4, lastName);
+			pst.setString(5, phone);
+			pst.setString(6, address);
+			pst.setString(7, email);
+			pst.executeUpdate();
+
+			MainWindow.tableModel.fireTableDataChanged();
+
+			pst.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void deleteClient(int clientId) {
+		try {
+			System.out.println("ID client:" + clientId);
+			PreparedStatement pst = con.prepareStatement("DELETE FROM Project.CONTACTS WHERE CUSTOMER_ID = ?;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			pst.setInt(1, clientId);
+			pst.executeUpdate();
+
+			pst = con.prepareStatement("DELETE FROM Project.CUSTOMERS WHERE CUSTOMER_ID = ?;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+			pst.setInt(1, clientId);
+			pst.executeUpdate();
+			MainWindow.tableModel.fireTableDataChanged();
+			pst.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 }
