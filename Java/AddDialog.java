@@ -18,11 +18,15 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.DefaultComboBoxModel;
 import java.util.Vector;
+import javax.swing.JScrollPane;
+import javax.swing.JList;
+import javafx.util.Pair;
 
 @SuppressWarnings("serial")
 public class AddDialog extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
+	public static JList<String> orderItemList;
 	private static JTextField productNameTextField;
 	private static JTextField productDescriptionTextField;
 	private static JTextField productPriceTextField;
@@ -32,10 +36,6 @@ public class AddDialog extends JDialog {
 	private JTextField employeeLastNameTextField;
 	private JTextField employeeEmailTextField;
 	private JTextField employeePhoneTextField;
-	private JTextField textField;
-	private JTextField textField_1;
-	private JTextField textField_2;
-	private JTextField textField_3;
 	private JTextField clientEmailTextField;
 	private JTextField clientPhoneTextField;
 	private JTextField clientLastNameTextField;
@@ -45,11 +45,16 @@ public class AddDialog extends JDialog {
 	public static JComboBox<String> productWarehouseComboBox;
 	public static JComboBox<String> employeeJobTitleComboBox;
 	public static JComboBox<String> employeeWarehouseComboBox;
+	public static JComboBox<String> orderStatusComboBox;
+	public static JComboBox<String> orderClientComboBox;
 	public static JTabbedPane tabbedPane;
-
+	private JTextField orderSearchTextField;
+	public static int quantity = 1;
+	public static Vector<Pair<String, Integer>> itemsToAddToOrder = new Vector<Pair<String, Integer>>();	
 	/**
 	 * Launch the application.
 	 */
+	
 	public static void main(String[] args) {
 		try {
 			AddDialog dialog = new AddDialog();
@@ -71,16 +76,19 @@ public class AddDialog extends JDialog {
 
 		// Filling comboBoxCategoriesItems with categories
 		Vector<String> comboBoxCategoriesItems = Database.getCategories();
+		Vector<String> comboBoxClientItems = Database.getClientsFirstAndLastNames();
+		
 
 		setBounds(100, 100, 559, 481);
-		getContentPane().setLayout(new BorderLayout());
+		getContentPane().setLayout(null);
+		contentPanel.setBounds(0, 0, 559, 412);
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		getContentPane().add(contentPanel);
 		contentPanel.setLayout(null);
 
 		tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		tabbedPane.setTabLayoutPolicy(JTabbedPane.SCROLL_TAB_LAYOUT);
-		tabbedPane.setBounds(6, 6, 547, 397);
+		tabbedPane.setBounds(6, 6, 547, 411);
 		contentPanel.add(tabbedPane);
 
 		JPanel productPanel = new JPanel();
@@ -223,11 +231,11 @@ public class AddDialog extends JDialog {
 		employeePhoneTextField.setColumns(10);
 		employeePhoneTextField.setBounds(173, 134, 299, 28);
 		employeePanel.add(employeePhoneTextField);
-		
+
 		employeeWarehouseComboBox = new JComboBox<String>(comboBoxEmployeeWarehousesItems);
 		employeeWarehouseComboBox.setBounds(173, 295, 299, 27);
 		employeePanel.add(employeeWarehouseComboBox);
-		
+
 		JLabel employeeWarehouseTextField = new JLabel("Magazyn");
 		employeeWarehouseTextField.setLabelFor(employeeWarehouseComboBox);
 		employeeWarehouseTextField.setBounds(49, 296, 112, 28);
@@ -241,49 +249,55 @@ public class AddDialog extends JDialog {
 		verticalGlue_1_1.setBounds(0, 0, 83, 24);
 		ordersPanel.add(verticalGlue_1_1);
 
-		JLabel nameLabel_1 = new JLabel("Imię");
-		nameLabel_1.setBounds(49, 35, 112, 28);
-		ordersPanel.add(nameLabel_1);
+		JLabel orderStatusLabel = new JLabel("Status");
+		orderStatusLabel.setBounds(49, 331, 112, 28);
+		ordersPanel.add(orderStatusLabel);
 
-		textField = new JTextField();
-		textField.setColumns(10);
-		textField.setBounds(173, 35, 299, 28);
-		ordersPanel.add(textField);
+		orderStatusComboBox = new JComboBox<String>();
+		orderStatusComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Nowe", "W Realizacji", "Do Wysłania", "Do Odbioru", "Wysłane", "Odebrane", "Anulowane"}));
+		orderStatusComboBox.setBounds(173, 331, 299, 27);
+		ordersPanel.add(orderStatusComboBox);
+		
+		JPanel orderViewPanel = new JPanel();
+		orderViewPanel.setBounds(49, 36, 423, 240);
+		ordersPanel.add(orderViewPanel);
+		orderViewPanel.setLayout(null);
+		
+		JScrollPane orderScrollPane = new JScrollPane();
+		orderScrollPane.setBounds(6, 44, 317, 190);
+		orderViewPanel.add(orderScrollPane);
+		
+		orderItemList = new JList<String>(Database.getProductsNames());
+		orderScrollPane.setViewportView(orderItemList);
+		
+		JButton orderAddItemButton = new JButton("Add Item");
+		orderAddItemButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
 
-		JLabel lastNameLabel_1 = new JLabel("Nazwisko");
-		lastNameLabel_1.setBounds(49, 98, 112, 28);
-		ordersPanel.add(lastNameLabel_1);
+				AddQuantityDialog.main(null);
+				
 
-		textField_1 = new JTextField();
-		textField_1.setColumns(10);
-		textField_1.setBounds(173, 98, 299, 28);
-		ordersPanel.add(textField_1);
-
-		JLabel phoneLabel_1 = new JLabel("Telefon");
-		phoneLabel_1.setBounds(49, 161, 114, 28);
-		ordersPanel.add(phoneLabel_1);
-
-		textField_2 = new JTextField();
-		textField_2.setColumns(10);
-		textField_2.setBounds(173, 161, 299, 28);
-		ordersPanel.add(textField_2);
-
-		JLabel emailLabel_1 = new JLabel("Email");
-		emailLabel_1.setBounds(49, 224, 112, 28);
-		ordersPanel.add(emailLabel_1);
-
-		textField_3 = new JTextField();
-		textField_3.setColumns(10);
-		textField_3.setBounds(173, 224, 299, 28);
-		ordersPanel.add(textField_3);
-
-		JLabel jobTitleLable_1 = new JLabel("Stanowisko");
-		jobTitleLable_1.setBounds(49, 287, 112, 28);
-		ordersPanel.add(jobTitleLable_1);
-
-		JComboBox<String> jobTitleComboBox_1 = new JComboBox<String>();
-		jobTitleComboBox_1.setBounds(173, 287, 299, 27);
-		ordersPanel.add(jobTitleComboBox_1);
+			}
+		});
+		orderAddItemButton.setBounds(335, 103, 82, 29);
+		orderViewPanel.add(orderAddItemButton);
+		
+		orderSearchTextField = new JTextField();
+		orderSearchTextField.setBounds(108, 6, 215, 26);
+		orderViewPanel.add(orderSearchTextField);
+		orderSearchTextField.setColumns(10);
+		
+		JLabel orderSearchLabel = new JLabel("Wyszukaj");
+		orderSearchLabel.setBounds(6, 6, 90, 26);
+		orderViewPanel.add(orderSearchLabel);
+		
+		JLabel orderClientLabel = new JLabel("Klient");
+		orderClientLabel.setBounds(49, 291, 112, 28);
+		ordersPanel.add(orderClientLabel);
+		
+		orderClientComboBox = new JComboBox<String>(comboBoxClientItems);
+		orderClientComboBox.setBounds(173, 291, 299, 27);
+		ordersPanel.add(orderClientComboBox);
 
 		JPanel clientPanel = new JPanel();
 		tabbedPane.addTab("Klient", null, clientPanel, null);
@@ -343,55 +357,62 @@ public class AddDialog extends JDialog {
 		clientAddressTextField.setBounds(173, 224, 299, 28);
 		clientPanel.add(clientAddressTextField);
 		{
-			JButton cancelButton = new JButton("Cancel");
-			cancelButton.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-				}
-			});
-			cancelButton.setBounds(16, 409, 240, 38);
-			contentPanel.add(cancelButton);
-			cancelButton.setActionCommand("Cancel");
-		}
-
-		JButton addButton = new JButton("Add");
-		addButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				int selectedTabIndex = tabbedPane.getSelectedIndex();
-				System.out.println(selectedTabIndex);
-				switch (selectedTabIndex) {
-					case 0:
-						Database.addProduct(productNameTextField.getText(), productDescriptionTextField.getText(),
-								productWarehouseComboBox.getSelectedIndex(), productCategoryComboBox.getSelectedIndex(),
-								Integer.parseInt(productPriceTextField.getText()),
-								Integer.parseInt(productCostTextField.getText()),
-								Integer.parseInt(productQuantityTextField.getText()));
-						break;
-					case 1:
-						Database.addEmployee(employeeFirstNameTextField.getText(), employeeLastNameTextField.getText(),
-						employeePhoneTextField.getText(),
-						employeeEmailTextField.getText(),
-						employeeJobTitleComboBox.getSelectedItem().toString(),
-						employeeWarehouseComboBox.getSelectedIndex());
-						break;
-					case 2:
-						
-						break;
-					case 3:
-						Database.addClient(clientFirstNameTextField.getText(), clientLastNameTextField.getText(), clientPhoneTextField.getText(), clientAddressTextField.getText(), clientEmailTextField.getText());
-						break;
-					default:
-						System.out.println("Wrong logic!");
-				}
-
-			}
-		});
-		addButton.setActionCommand("Add");
-		addButton.setBounds(302, 409, 240, 38);
-		contentPanel.add(addButton);
-		{
 			JPanel buttonPane = new JPanel();
-			getContentPane().add(buttonPane, BorderLayout.SOUTH);
+			buttonPane.setBounds(0, 424, 559, 29);
+			getContentPane().add(buttonPane);
 			buttonPane.setLayout(new GridLayout(0, 2, 0, 0));
+			
+					JButton addButton = new JButton("Add");
+					buttonPane.add(addButton);
+					addButton.addActionListener(new ActionListener() {
+						public void actionPerformed(ActionEvent e) {
+							int selectedTabIndex = tabbedPane.getSelectedIndex();
+							switch (selectedTabIndex) {
+								case 0:
+									Database.addProduct(productNameTextField.getText(), productDescriptionTextField.getText(),
+											productWarehouseComboBox.getSelectedIndex(), productCategoryComboBox.getSelectedIndex(),
+											Integer.parseInt(productPriceTextField.getText()),
+											Integer.parseInt(productCostTextField.getText()),
+											Integer.parseInt(productQuantityTextField.getText()));
+									break;
+								case 1:
+									Database.addEmployee(employeeFirstNameTextField.getText(), employeeLastNameTextField.getText(),
+											employeePhoneTextField.getText(),
+											employeeEmailTextField.getText(),
+											employeeJobTitleComboBox.getSelectedItem().toString(),
+											employeeWarehouseComboBox.getSelectedIndex());
+									break;
+								case 2:
+									Database.addOrder(orderItemList.getSelectedValue() , quantity, orderClientComboBox.getSelectedItem().toString() , orderStatusComboBox.getSelectedItem().toString());
+									for (Pair<String, Integer> item : itemsToAddToOrder){
+										Database.addItemToOrder(item.getValue(), item.getKey());
+										System.out.println("Dodano : " + item.getValue() + " " +  item.getKey());
+									}
+									
+									itemsToAddToOrder.clear();
+									break;
+								case 3:
+									Database.addClient(clientFirstNameTextField.getText(), clientLastNameTextField.getText(),
+											clientPhoneTextField.getText(), clientAddressTextField.getText(),
+											clientEmailTextField.getText());
+									break;
+								default:
+									System.out.println("Error!");
+							}
+							dispose();
+						}
+					});
+					addButton.setActionCommand("Add");
+					{
+						JButton cancelButton = new JButton("Cancel");
+						buttonPane.add(cancelButton);
+						cancelButton.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								dispose();
+							}
+						});
+						cancelButton.setActionCommand("Cancel");
+					}
 		}
 	}
 }

@@ -61,7 +61,6 @@ public class Database {
 					System.out.println(login + "\t" + password);
 					return true;
 				}
-
 			}
 
 			rs.close();
@@ -82,20 +81,23 @@ public class Database {
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs = pst.executeQuery();
 			MainWindow.tableModel.setRowCount(0);
+			int i = 0;
 			while (rs.next()) {
 
+				String product_id = String.valueOf(i);
 				String product_name = rs.getString("product_name");
 				String description = rs.getString("description");
 				String warehouse_name = rs.getString("warehouse_name");
 
 				// add header of the table
-				String header[] = new String[] { "NAZWA PRODUKTU", "OPIS", "MAGAZYN" };
+				String header[] = new String[] { "ID", "NAZWA PRODUKTU", "OPIS", "MAGAZYN" };
 
 				// add header to the table model
 				MainWindow.tableModel.setColumnIdentifiers(header);
 
-				MainWindow.tableModel.addRow(new String[] { product_name, description, warehouse_name });
+				MainWindow.tableModel.addRow(new String[] { product_id, product_name, description, warehouse_name });
 				MainWindow.tableModel.fireTableDataChanged();
+				++i;
 
 			}
 
@@ -108,6 +110,53 @@ public class Database {
 		}
 	}
 
+	public static Vector<String> getClientsFirstAndLastNames() {
+
+		try {
+
+			PreparedStatement pst = con.prepareStatement("SELECT * FROM Clients;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs = pst.executeQuery();
+			Vector<String> comboBoxItems = new Vector<String>();
+			while (rs.next()) {
+				String firstName = rs.getString("first_name");
+				String lastName = rs.getString("last_name");
+				comboBoxItems.add(firstName + " " + lastName);
+			}
+			rs.close();
+			pst.close();
+			return comboBoxItems;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	}			
+
+
+	public static String[] getProductsNames() {
+		try {
+			Vector<String> products = new Vector<String>();
+			PreparedStatement pst = con.prepareStatement("SELECT * FROM PRODUCTS;", ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs = pst.executeQuery();
+			while (rs.next()) {
+
+				products.add(rs.getString("product_name"));
+			}
+			
+			rs.close();
+			pst.close();
+			return products.toArray(new String[products.size()]);
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
+	}
+
 	public static void getEmployees() {
 		try {
 
@@ -116,18 +165,18 @@ public class Database {
 			ResultSet rs = pst.executeQuery();
 			MainWindow.tableModel.setRowCount(0);
 			while (rs.next()) {
-				Vector<String> dataRow = new Vector<String>();
+				String employee_id = rs.getString("employee_id");
 				String first_name = rs.getString("first_name");
 				String last_name = rs.getString("last_name");
 				String warehouse_name = rs.getString("warehouse_name");
 
 				// add header of the table
-				String header[] = new String[] { "IMIĘ", "NAZWISKO", "MAGAZYN" };
+				String header[] = new String[] { "ID", "IMIĘ", "NAZWISKO", "MAGAZYN" };
 
 				// add header to the table model
 				MainWindow.tableModel.setColumnIdentifiers(header);
 
-				MainWindow.tableModel.addRow(new String[] { first_name, last_name, warehouse_name });
+				MainWindow.tableModel.addRow(new String[] { employee_id, first_name, last_name, warehouse_name });
 				MainWindow.tableModel.fireTableDataChanged();
 
 			}
@@ -143,13 +192,12 @@ public class Database {
 
 	public static void getClients() {
 		try {
-			Vector<Vector<String>> data = new Vector<Vector<String>>();
 			PreparedStatement pst = con.prepareStatement("SELECT * FROM CLIENTS;", ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs = pst.executeQuery();
 			MainWindow.tableModel.setRowCount(0);
 			while (rs.next()) {
-				Vector<String> dataRow = new Vector<String>();
+				String client_id = rs.getString("customer_id");
 				String first_name = rs.getString("first_name");
 				String last_name = rs.getString("last_name");
 				String phone = rs.getString("phone");
@@ -158,21 +206,13 @@ public class Database {
 				String credit = rs.getString("credit");
 
 				// add header of the table
-				String header[] = new String[] { "IMIĘ", "NAZWISKO", "TELEFON", "EMAIL", "ADRES", "KREDYT" };
+				String header[] = new String[] { "ID", "IMIĘ", "NAZWISKO", "TELEFON", "EMAIL", "ADRES", "KREDYT" };
 
 				// add header to the table model
 				MainWindow.tableModel.setColumnIdentifiers(header);
-				// add data to rows of the table
-				dataRow.add(first_name);
-				dataRow.add(last_name);
-				dataRow.add(phone);
-				dataRow.add(address);
-				dataRow.add(email);
-				dataRow.add(credit);
 
-				data.add(dataRow);
-
-				MainWindow.tableModel.addRow(new String[] { first_name, last_name, phone, address, email, credit });
+				MainWindow.tableModel
+						.addRow(new String[] { client_id, first_name, last_name, phone, address, email, credit });
 				MainWindow.tableModel.fireTableDataChanged();
 
 			}
@@ -195,18 +235,19 @@ public class Database {
 			MainWindow.tableModel.setRowCount(0);
 			while (rs.next()) {
 
-				String first_name = rs.getString("number");
-				String last_name = rs.getString("date");
-				String phone = rs.getString("total_amount");
-				String address = rs.getString("status");
+				String orderId = rs.getString("order_id");
+				String number = rs.getString("number");
+				String date = rs.getString("date");
+				String totalAmount = rs.getString("total_amount");
+				String status = rs.getString("status");
 
 				// add header of the table
-				String header[] = new String[] { "NUMER ZAMÓWIENIA", "DATA WYSTAWIENIA", "KWOTA", "STATUS" };
+				String header[] = new String[] { "ID", "NUMER ZAMÓWIENIA", "DATA WYSTAWIENIA", "KWOTA", "STATUS" };
 
 				// add header to the table model
 				MainWindow.tableModel.setColumnIdentifiers(header);
 
-				MainWindow.tableModel.addRow(new String[] { first_name, last_name, phone, address });
+				MainWindow.tableModel.addRow(new String[] { orderId, number, date, totalAmount, status });
 				MainWindow.tableModel.fireTableDataChanged();
 
 			}
@@ -315,11 +356,116 @@ public class Database {
 		}
 	}
 
+	public static void addItemToOrder(int quantity, String productName) {
+		try {
+
+			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM Project.ORDER_ITEM;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs;
+			rs = pst.executeQuery();
+			int orderItemId = 1;
+			while (rs.next()) {
+				orderItemId = rs.getInt("count") + 1;
+			}
+
+			pst = con.prepareStatement("SELECT COUNT(*) FROM Orders;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			rs = pst.executeQuery();
+			int orderId = 1;
+			while (rs.next()) {
+				orderId = rs.getInt("count");
+			}
+
+			pst = con.prepareStatement("SELECT P.PRODUCT_ID FROM Project.PRODUCTS P WHERE P.PRODUCT_NAME = ?;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			pst.setString(1, productName);
+			rs = pst.executeQuery();
+			int productId = 1;
+			while (rs.next()) {
+				productId = rs.getInt("product_id") + 1;
+			}
+
+			pst = con.prepareStatement(
+					"INSERT INTO Project.ORDER_ITEM(ITEM_ID, ORDER_ID, PRODUCT_ID, QUANTITY) VALUES (?, ?, ?, ?); ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+					
+			pst.setInt(1, orderItemId);
+			pst.setInt(2, orderId);
+			pst.setInt(3, productId);
+			pst.setInt(4, quantity);
+
+			pst.executeUpdate();
+
+			MainWindow.tableModel.fireTableDataChanged();
+
+			pst.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void addOrder(String  productName, int quantity, String client, String status) {
+		try {
+			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM Orders;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs;
+			rs = pst.executeQuery();
+			int orderId = 1;
+			while (rs.next()) {
+				orderId = rs.getInt("count") + 1;
+			}
+
+			String[] splitedClientName = client.split(" ");
+
+			pst = con.prepareStatement("SELECT CUSTOMER_ID from clients WHERE FIRST_NAME = ? AND LAST_NAME = ?;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			pst.setString(1, splitedClientName[0]);
+			pst.setString(2, splitedClientName[1]);
+			rs = pst.executeQuery();
+			int clientId = 1;
+			while (rs.next()) {
+				clientId = rs.getInt("customer_id");
+			}
+			rs.close();
+
+			pst = con.prepareStatement(
+					"INSERT INTO Project.ORDERS(ORDER_ID, CUSTOMER_ID, NUMBER, DATE, TOTAL_AMOUNT, STATUS) VALUES (?, ?, ?, TO_DATE('17/12/2015', 'DD/MM/YYYY'), ?, ?); ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+					
+			pst.setInt(1, orderId);
+			pst.setInt(2, clientId);
+			pst.setString(3, "123123/123123");
+			pst.setFloat(4, 1231.23f);
+			pst.setString(5, status);
+
+			pst.executeUpdate();
+
+			MainWindow.tableModel.fireTableDataChanged();
+
+			pst.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public static void addProduct(String name, String description, int warehouseId, int categoryId, int price,
 			int cost, int quantity) {
 		try {
 
-			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM (SELECT * FROM Products)as Products;",
+			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM Products;",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs;
@@ -353,8 +499,6 @@ public class Database {
 			pst.setInt(2, warehouseId + 1);
 			pst.setInt(3, quantity);
 			pst.executeUpdate();
-
-
 
 			MainWindow.tableModel.fireTableDataChanged();
 
@@ -420,7 +564,6 @@ public class Database {
 
 	public static void deleteClient(int clientId) {
 		try {
-			System.out.println("ID client:" + clientId);
 			PreparedStatement pst = con.prepareStatement("DELETE FROM Project.CONTACTS WHERE CUSTOMER_ID = ?;",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
@@ -433,6 +576,91 @@ public class Database {
 
 			pst.setInt(1, clientId);
 			pst.executeUpdate();
+			MainWindow.tableModel.fireTableDataChanged();
+			pst.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void deleteOrder(int orderId) {
+		try {
+
+			PreparedStatement pst = con.prepareStatement("DELETE FROM Project.ORDER_ITEM WHERE ORDER_ID = ?;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			pst.setInt(1, orderId);
+			pst.executeUpdate();
+
+			pst = con.prepareStatement("DELETE FROM Project.ORDERS WHERE ORDER_ID = ?;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+			pst.setInt(1, orderId);
+			pst.executeUpdate();
+			MainWindow.tableModel.fireTableDataChanged();
+			pst.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void deleteEmployee(int employeeId) {
+		try {
+
+			PreparedStatement pst = con.prepareStatement(
+					"DELETE FROM Project.EMPLOYEES_IN_WAREHOUSES WHERE EMPLOYEE_ID = ?;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			pst.setInt(1, employeeId);
+			pst.executeUpdate();
+
+			pst = con.prepareStatement("DELETE FROM Project.EMPLOYEES WHERE EMPLOYEE_ID = ?;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+			pst.setInt(1, employeeId);
+			pst.executeUpdate();
+			MainWindow.tableModel.fireTableDataChanged();
+			pst.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void deleteProduct(String productName, String warehouseName, String description) {
+		try {
+			// Get an index of product
+			System.out.println(productName);
+			System.out.println(warehouseName);
+			System.out.println(description);
+			PreparedStatement pst = con.prepareStatement(
+					"SELECT P.PRODUCT_ID, W.WAREHOUSE_ID FROM Project.PRODUCTS_IN_WAREHOUSES PW LEFT JOIN Project.WAREHOUSES W ON W.WAREHOUSE_ID = PW.WAREHOUSE_ID LEFT JOIN Project.PRODUCTS P ON P.PRODUCT_ID = PW.PRODUCT_ID WHERE W.WAREHOUSE_NAME = ? and P.PRODUCT_NAME = ? and P.DESCRIPTION = ?;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+			pst.setString(1, warehouseName);
+			pst.setString(2, productName);
+			pst.setString(3, description);
+			ResultSet rs = pst.executeQuery();
+			int productId = 0;
+			int warehouseId = 0;
+			while (rs.next()) {
+				productId = rs.getInt("product_id");
+				warehouseId = rs.getInt("warehouse_id");
+			}
+
+			pst = con.prepareStatement(
+					"DELETE FROM Project.PRODUCTS_IN_WAREHOUSES WHERE PRODUCT_ID = ? AND WAREHOUSE_ID = ?;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			pst.setInt(1, productId);
+			pst.setInt(2, warehouseId);
+			pst.executeUpdate();
+
 			MainWindow.tableModel.fireTableDataChanged();
 			pst.close();
 		} catch (SQLException e) {
