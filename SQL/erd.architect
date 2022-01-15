@@ -371,23 +371,23 @@
  <liquibase-settings useSeparateChangeSets="false" generateId="false" idStart="1"/>
  <create-kettle-job-settings filePath="" jobName="" schemaName="" kettleJoinType="0" savingToFile="true" />
  <play-pen zoom="1.0" viewportX="0" viewportY="0" relationship-style="rectilinear" names-displayLogicalNames="true" showPrimaryTag="true" showForeignTag="true" showAlternateTag="true" columnVisibility="ALL" relationshipLabelVisibility="true">
-  <table-pane table-ref="TAB1" x="478" y="686" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-pane table-ref="TAB8" x="43" y="422" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-pane table-ref="TAB17" x="37" y="697" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB1" x="439" y="687" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB8" x="30" y="423" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB17" x="38" y="704" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB23" x="1012" y="704" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB31" x="422" y="422" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-pane table-ref="TAB38" x="750" y="417" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB38" x="796" y="417" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB47" x="1156" y="419" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-pane table-ref="TAB52" x="787" y="43" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB52" x="800" y="30" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB61" x="833" y="252" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB68" x="421" y="64" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-pane table-ref="TAB73" x="43" y="67" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
+  <table-pane table-ref="TAB73" x="26" y="39" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
   <table-pane table-ref="TAB84" x="599" y="819" bgColor="0xeeeeee" fgColor="0x000000" rounded="false" dashed="false"/>
-  <table-link relationship-ref="REL94" pkConnection="0.7868217054263565" fkConnection="0.3655913978494624" rLineColor="0x333333" pkLabelText="" fkLabelText="" orientation="132"/>
+  <table-link relationship-ref="REL94" pkConnection="0.4263565891472868" fkConnection="0.3655913978494624" rLineColor="0x333333" pkLabelText="" fkLabelText="" orientation="132"/>
   <table-link relationship-ref="REL96" pkConnection="0.41904761904761906" fkConnection="0.6133333333333333" rLineColor="0x333333" pkLabelText="" fkLabelText="" orientation="18"/>
   <table-link relationship-ref="REL102" pkConnection="0.7333333333333333" fkConnection="0.4" rLineColor="0x333333" pkLabelText="" fkLabelText="" orientation="18"/>
   <table-link relationship-ref="REL98" pkConnection="0.4166666666666667" fkConnection="0.65" rLineColor="0x333333" pkLabelText="" fkLabelText="" orientation="18"/>
-  <table-link relationship-ref="REL100" pkConnection="0.603112840466926" fkConnection="0.43243243243243246" rLineColor="0x333333" pkLabelText="" fkLabelText="" orientation="72"/>
+  <table-link relationship-ref="REL100" pkConnection="0.5642023346303502" fkConnection="0.43243243243243246" rLineColor="0x333333" pkLabelText="" fkLabelText="" orientation="72"/>
   <table-link relationship-ref="REL104" pkConnection="0.559322033898305" fkConnection="0.44787644787644787" rLineColor="0x333333" pkLabelText="" fkLabelText="" orientation="132"/>
   <table-link relationship-ref="REL106" pkConnection="0.4666666666666667" fkConnection="0.5166666666666667" rLineColor="0x333333" pkLabelText="" fkLabelText="" orientation="33"/>
   <table-link relationship-ref="REL108" pkConnection="0.5666666666666667" fkConnection="0.44166666666666665" rLineColor="0x333333" pkLabelText="" fkLabelText="" orientation="18"/>

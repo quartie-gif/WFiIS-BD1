@@ -1,6 +1,14 @@
-import java.sql.*;
-import java.util.*;
-import javax.swing.JComboBox;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.StringJoiner;
+import java.util.Vector;
 
 public class Database {
 	private static Connection con;
@@ -81,23 +89,23 @@ public class Database {
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs = pst.executeQuery();
 			MainWindow.tableModel.setRowCount(0);
-			int i = 0;
 			while (rs.next()) {
 
-				String product_id = String.valueOf(i);
+				String product_id = rs.getString("product_id");
 				String product_name = rs.getString("product_name");
 				String description = rs.getString("description");
 				String warehouse_name = rs.getString("warehouse_name");
+				String quantity = rs.getString("quantity");
 
 				// add header of the table
-				String header[] = new String[] { "ID", "NAZWA PRODUKTU", "OPIS", "MAGAZYN" };
+				String header[] = new String[] { "ID", "NAZWA PRODUKTU", "OPIS", "MAGAZYN", "ILOŚĆ" };
 
 				// add header to the table model
 				MainWindow.tableModel.setColumnIdentifiers(header);
 
-				MainWindow.tableModel.addRow(new String[] { product_id, product_name, description, warehouse_name });
+				MainWindow.tableModel
+						.addRow(new String[] { product_id, product_name, description, warehouse_name, quantity });
 				MainWindow.tableModel.fireTableDataChanged();
-				++i;
 
 			}
 
@@ -132,8 +140,7 @@ public class Database {
 			e.printStackTrace();
 			return null;
 		}
-	}			
-
+	}
 
 	public static String[] getProductsNames() {
 		try {
@@ -145,7 +152,7 @@ public class Database {
 
 				products.add(rs.getString("product_name"));
 			}
-			
+
 			rs.close();
 			pst.close();
 			return products.toArray(new String[products.size()]);
@@ -314,14 +321,14 @@ public class Database {
 			int warehouseId) {
 		try {
 
-			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM (SELECT * FROM Employees)as Employees;",
+			PreparedStatement pst = con.prepareStatement("SELECT MAX(employee_id) FROM Employees;",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs;
 			rs = pst.executeQuery();
 			int employeeId = 1;
 			while (rs.next()) {
-				employeeId = rs.getInt("count") + 1;
+				employeeId = rs.getInt("max") + 1;
 			}
 			rs.close();
 			pst = con.prepareStatement(
@@ -359,23 +366,23 @@ public class Database {
 	public static void addItemToOrder(int quantity, String productName) {
 		try {
 
-			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM Project.ORDER_ITEM;",
+			PreparedStatement pst = con.prepareStatement("SELECT MAX(ITEM_ID) FROM Project.ORDER_ITEM;",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs;
 			rs = pst.executeQuery();
 			int orderItemId = 1;
 			while (rs.next()) {
-				orderItemId = rs.getInt("count") + 1;
+				orderItemId = rs.getInt("max") + 1;
 			}
 
-			pst = con.prepareStatement("SELECT COUNT(*) FROM Orders;",
+			pst = con.prepareStatement("SELECT MAX(ORDER_ID) FROM Orders;",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			rs = pst.executeQuery();
 			int orderId = 1;
 			while (rs.next()) {
-				orderId = rs.getInt("count");
+				orderId = rs.getInt("max");
 			}
 
 			pst = con.prepareStatement("SELECT P.PRODUCT_ID FROM Project.PRODUCTS P WHERE P.PRODUCT_NAME = ?;",
@@ -393,7 +400,6 @@ public class Database {
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 
-					
 			pst.setInt(1, orderItemId);
 			pst.setInt(2, orderId);
 			pst.setInt(3, productId);
@@ -411,7 +417,7 @@ public class Database {
 		}
 	}
 
-	public static void addOrder(String  productName, int quantity, String client, String status) {
+	public static void addOrder(String productName, int quantity, String client, String status) {
 		try {
 			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM Orders;",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -442,7 +448,6 @@ public class Database {
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 
-					
 			pst.setInt(1, orderId);
 			pst.setInt(2, clientId);
 			pst.setString(3, "123123/123123");
@@ -465,14 +470,14 @@ public class Database {
 			int cost, int quantity) {
 		try {
 
-			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM Products;",
+			PreparedStatement pst = con.prepareStatement("SELECT MAX(PRODUCT_ID) FROM Products;",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs;
 			rs = pst.executeQuery();
 			int productId = 1;
 			while (rs.next()) {
-				productId = rs.getInt("count") + 1;
+				productId = rs.getInt("max") + 1;
 			}
 			rs.close();
 
@@ -667,6 +672,39 @@ public class Database {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public static void generateRaport() {
+		try {
+			BufferedWriter bw = new BufferedWriter(new FileWriter(new File("./raports/Raport.txt")));
+
+			StringJoiner joiner = new StringJoiner("");
+			for (int column = 0; column < MainWindow.tableModel.getColumnCount(); column++) {
+				joiner.add(String.format("%-25s",MainWindow.tableModel.getColumnName(column)));
+			}
+			System.out.println(joiner.toString());
+			bw.write(joiner.toString());
+			bw.newLine();
+			bw.newLine();
+			for (int row = 0; row < MainWindow.tableModel.getRowCount(); row++) {
+				joiner = new StringJoiner("");
+				for (int column = 0; column < MainWindow.tableModel.getColumnCount(); column++) {
+					Object tableItem = MainWindow.tableModel.getValueAt(row, column);
+					String value = tableItem == null ? "null" : tableItem.toString();
+					joiner.add(String.format("%-25s",value));
+				}
+				System.out.println( Database.centerString(25, joiner.toString()));
+				bw.write(Database.centerString(25, joiner.toString()));
+				bw.newLine();
+			}
+			bw.close();
+		} catch (IOException exp) {
+			exp.printStackTrace();
+		}
+
+	}
+	public static String centerString (int width, String s) {
+		return String.format("%-" + width  + "s", String.format("%" + (s.length() + (width - s.length()) / 2) + "s", s));
 	}
 
 }

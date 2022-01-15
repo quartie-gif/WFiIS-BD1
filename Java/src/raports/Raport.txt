@@ -1,0 +1,38 @@
+ID                       NAZWA PRODUKTU           OPIS                     MAGAZYN                  ILOŚĆ                    
+
+1                        WELNA ROCKWOOL 12CM      WELNA SKALNA             Alfa                     51300                    
+1                        WELNA ROCKWOOL 12CM      WELNA SKALNA             Gamma                    5200                     
+1                        WELNA ROCKWOOL 12CM      WELNA SKALNA             Beta                     531200                   
+1                        WELNA ROCKWOOL 12CM      WELNA SKALNA             Epsilon                  2100                     
+1                        WELNA ROCKWOOL 12CM      WELNA SKALNA             Delta                    52020                    
+1                        WELNA ROCKWOOL 12CM      WELNA SKALNA             Filar                    500                      
+2                        WELNA ROCKWOOL 15CM      WELNA SKALNA             Filar                    600                      
+2                        WELNA ROCKWOOL 15CM      WELNA SKALNA             Gamma                    642410                   
+3                        WELNA ROCKWOOL 16CM      WELNA SKALNA             Epsilon                  5200                     
+3                        WELNA ROCKWOOL 16CM      WELNA SKALNA             Filar                    500                      
+3                        WELNA ROCKWOOL 16CM      WELNA SKALNA             Alfa                     60420                    
+4                        WELNA ROCKWOOL 20CM      WELNA SKALNA             Epsilon                  52300                    
+4                        WELNA ROCKWOOL 20CM      WELNA SKALNA             Filar                    1200                     
+4                        WELNA ROCKWOOL 20CM      WELNA SKALNA             Beta                     121300                   
+5                        WELNA ROCKWOOL 22CM      WELNA SKALNA             Filar                    300                      
+5                        WELNA ROCKWOOL 22CM      WELNA SKALNA             Alfa                     1200                     
+6                        WELNA ROCKWOOL 30CM      WELNA SKALNA             Alfa                     500                      
+6                        WELNA ROCKWOOL 30CM      WELNA SKALNA             Epsilon                  6440                     
+6                        WELNA ROCKWOOL 30CM      WELNA SKALNA             Delta                    64420                    
+7                        WELNA ROCKWOOL 35CM      WELNA SKALNA             Filar                    1200                     
+8                        GWOZDZIE 5CM             STOLARSKIE               Alfa                     1200                     
+9                        GWOZDZIE 10CM            STOLARSKIE               Beta                     531200                   
+10                       GWOZDZIE 15CM            STOLARSKIE               Beta                     60420                    
+11                       GWOZDZIE 20CM            STOLARSKIE               Gamma                    5200                     
+12                       GWOZDZIE 25CM            STOLARSKIE               Gamma                    5200                     
+13                       GWOZDZIE 30CM            STOLARSKIE               Gamma                    5200                     
+14                       GWOZDZIE 35CM            STOLARSKIE               Gamma                    5200                     
+15                       CEMENT                   CZARNY                   Gamma                    5200                     
+15                       CEMENT                   CZARNY                   Delta                    64420                    
+16                       CEMENT                   CZERWONY                 Delta                    64420                    
+17                       H+H 12CM                 CZARNY                   Delta                    64420                    
+18                       H+H 16CM                 CZERWONY                 Delta                    64420                    
+19                       H+H 18CM                 CZERWONY                 Delta                    64420                    
+20                       STYRODUR XPS 5CM         WODOODPORNY              Delta                    64420                    
+21                       STYRODUR XPS 5CM         WODOODPORNY              Delta                    64420                    
+22                       qwe                      qwe                      null                     null                     

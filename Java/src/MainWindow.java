@@ -171,13 +171,13 @@ public class MainWindow {
 						Database.deleteProduct(productName, productWarehouse, productDescirption);
 						break;
 					case "Pracownicy":
-						Database.deleteEmployee(row);
+						Database.deleteEmployee(Integer.parseInt((String) tableModel.getValueAt(row - 1, 0)));
 						break;
 					case "Zamówienia":
 						Database.deleteOrder(row);
 						break;
 					case "Klienci":
-						Database.deleteClient(row);
+						Database.deleteClient(Integer.parseInt((String) tableModel.getValueAt(row - 1, 0)));
 						break;
 					default:
 						System.out.println("Error checking last clicked button!");
@@ -187,11 +187,26 @@ public class MainWindow {
 		});
 		panel_3.add(deleteButton);
 
-		JButton editButton = new JButton("Edytuj");
+		JButton editButton = new JButton("Raport");
 		editButton.setBounds(6, 271, 152, 41);
 		editButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-
+				switch (lastClickedButton) {
+					case "Produkty":
+						Database.generateRaport();
+						break;
+					case "Pracownicy":
+						Database.generateRaport();
+						break;
+					case "Zamówienia":
+						Database.generateRaport();
+						break;
+					case "Klienci":
+						Database.generateRaport();
+						break;
+					default:
+						System.out.println("Error checking last clicked button!");
+				}
 			}
 		});
 		panel_3.add(editButton);

@@ -13,7 +13,6 @@ import java.awt.event.ActionEvent;
 import javafx.util.Pair;
 import java.util.Vector;
 
-
 @SuppressWarnings("serial")
 public class AddQuantityDialog extends JDialog {
 
@@ -63,9 +62,11 @@ public class AddQuantityDialog extends JDialog {
 				JButton okButton = new JButton("OK");
 				okButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-                        Pair<String, Integer> productToAdd = new Pair<String, Integer>(AddDialog.orderItemList.getSelectedValue(), Integer.valueOf(addQuantityTextField.getText()));
-				        AddDialog.itemsToAddToOrder.add(productToAdd);
-                        dispose();
+						Pair<String, Integer> productToAdd = new Pair<String, Integer>(
+								AddDialog.orderItemList.getSelectedValue(),
+								Integer.valueOf(addQuantityTextField.getText()));
+						AddDialog.itemsToAddToOrder.add(productToAdd);
+						dispose();
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -76,7 +77,7 @@ public class AddQuantityDialog extends JDialog {
 				JButton cancelButton = new JButton("Cancel");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
-                        dispose();
+						dispose();
 					}
 				});
 				cancelButton.setActionCommand("Cancel");

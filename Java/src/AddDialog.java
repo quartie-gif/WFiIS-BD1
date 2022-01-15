@@ -50,11 +50,12 @@ public class AddDialog extends JDialog {
 	public static JTabbedPane tabbedPane;
 	private JTextField orderSearchTextField;
 	public static int quantity = 1;
-	public static Vector<Pair<String, Integer>> itemsToAddToOrder = new Vector<Pair<String, Integer>>();	
+	public static Vector<Pair<String, Integer>> itemsToAddToOrder = new Vector<Pair<String, Integer>>();
+
 	/**
 	 * Launch the application.
 	 */
-	
+
 	public static void main(String[] args) {
 		try {
 			AddDialog dialog = new AddDialog();
@@ -77,7 +78,6 @@ public class AddDialog extends JDialog {
 		// Filling comboBoxCategoriesItems with categories
 		Vector<String> comboBoxCategoriesItems = Database.getCategories();
 		Vector<String> comboBoxClientItems = Database.getClientsFirstAndLastNames();
-		
 
 		setBounds(100, 100, 559, 481);
 		getContentPane().setLayout(null);
@@ -254,47 +254,47 @@ public class AddDialog extends JDialog {
 		ordersPanel.add(orderStatusLabel);
 
 		orderStatusComboBox = new JComboBox<String>();
-		orderStatusComboBox.setModel(new DefaultComboBoxModel<String>(new String[] {"Nowe", "W Realizacji", "Do Wysłania", "Do Odbioru", "Wysłane", "Odebrane", "Anulowane"}));
+		orderStatusComboBox.setModel(new DefaultComboBoxModel<String>(new String[] { "Nowe", "W Realizacji",
+				"Do Wysłania", "Do Odbioru", "Wysłane", "Odebrane", "Anulowane" }));
 		orderStatusComboBox.setBounds(173, 331, 299, 27);
 		ordersPanel.add(orderStatusComboBox);
-		
+
 		JPanel orderViewPanel = new JPanel();
 		orderViewPanel.setBounds(49, 36, 423, 240);
 		ordersPanel.add(orderViewPanel);
 		orderViewPanel.setLayout(null);
-		
+
 		JScrollPane orderScrollPane = new JScrollPane();
 		orderScrollPane.setBounds(6, 44, 317, 190);
 		orderViewPanel.add(orderScrollPane);
-		
+
 		orderItemList = new JList<String>(Database.getProductsNames());
 		orderScrollPane.setViewportView(orderItemList);
-		
+
 		JButton orderAddItemButton = new JButton("Add Item");
 		orderAddItemButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				AddQuantityDialog.main(null);
-				
 
 			}
 		});
 		orderAddItemButton.setBounds(335, 103, 82, 29);
 		orderViewPanel.add(orderAddItemButton);
-		
+
 		orderSearchTextField = new JTextField();
 		orderSearchTextField.setBounds(108, 6, 215, 26);
 		orderViewPanel.add(orderSearchTextField);
 		orderSearchTextField.setColumns(10);
-		
+
 		JLabel orderSearchLabel = new JLabel("Wyszukaj");
 		orderSearchLabel.setBounds(6, 6, 90, 26);
 		orderViewPanel.add(orderSearchLabel);
-		
+
 		JLabel orderClientLabel = new JLabel("Klient");
 		orderClientLabel.setBounds(49, 291, 112, 28);
 		ordersPanel.add(orderClientLabel);
-		
+
 		orderClientComboBox = new JComboBox<String>(comboBoxClientItems);
 		orderClientComboBox.setBounds(173, 291, 299, 27);
 		ordersPanel.add(orderClientComboBox);
@@ -361,58 +361,61 @@ public class AddDialog extends JDialog {
 			buttonPane.setBounds(0, 424, 559, 29);
 			getContentPane().add(buttonPane);
 			buttonPane.setLayout(new GridLayout(0, 2, 0, 0));
-			
-					JButton addButton = new JButton("Add");
-					buttonPane.add(addButton);
-					addButton.addActionListener(new ActionListener() {
-						public void actionPerformed(ActionEvent e) {
-							int selectedTabIndex = tabbedPane.getSelectedIndex();
-							switch (selectedTabIndex) {
-								case 0:
-									Database.addProduct(productNameTextField.getText(), productDescriptionTextField.getText(),
-											productWarehouseComboBox.getSelectedIndex(), productCategoryComboBox.getSelectedIndex(),
-											Integer.parseInt(productPriceTextField.getText()),
-											Integer.parseInt(productCostTextField.getText()),
-											Integer.parseInt(productQuantityTextField.getText()));
-									break;
-								case 1:
-									Database.addEmployee(employeeFirstNameTextField.getText(), employeeLastNameTextField.getText(),
-											employeePhoneTextField.getText(),
-											employeeEmailTextField.getText(),
-											employeeJobTitleComboBox.getSelectedItem().toString(),
-											employeeWarehouseComboBox.getSelectedIndex());
-									break;
-								case 2:
-									Database.addOrder(orderItemList.getSelectedValue() , quantity, orderClientComboBox.getSelectedItem().toString() , orderStatusComboBox.getSelectedItem().toString());
-									for (Pair<String, Integer> item : itemsToAddToOrder){
-										Database.addItemToOrder(item.getValue(), item.getKey());
-										System.out.println("Dodano : " + item.getValue() + " " +  item.getKey());
-									}
-									
-									itemsToAddToOrder.clear();
-									break;
-								case 3:
-									Database.addClient(clientFirstNameTextField.getText(), clientLastNameTextField.getText(),
-											clientPhoneTextField.getText(), clientAddressTextField.getText(),
-											clientEmailTextField.getText());
-									break;
-								default:
-									System.out.println("Error!");
+
+			JButton addButton = new JButton("Add");
+			buttonPane.add(addButton);
+			addButton.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					int selectedTabIndex = tabbedPane.getSelectedIndex();
+					switch (selectedTabIndex) {
+						case 0:
+							Database.addProduct(productNameTextField.getText(), productDescriptionTextField.getText(),
+									productWarehouseComboBox.getSelectedIndex(),
+									productCategoryComboBox.getSelectedIndex(),
+									Integer.parseInt(productPriceTextField.getText()),
+									Integer.parseInt(productCostTextField.getText()),
+									Integer.parseInt(productQuantityTextField.getText()));
+							break;
+						case 1:
+							Database.addEmployee(employeeFirstNameTextField.getText(),
+									employeeLastNameTextField.getText(),
+									employeePhoneTextField.getText(),
+									employeeEmailTextField.getText(),
+									employeeJobTitleComboBox.getSelectedItem().toString(),
+									employeeWarehouseComboBox.getSelectedIndex());
+							break;
+						case 2:
+							Database.addOrder(orderItemList.getSelectedValue(), quantity,
+									orderClientComboBox.getSelectedItem().toString(),
+									orderStatusComboBox.getSelectedItem().toString());
+							for (Pair<String, Integer> item : itemsToAddToOrder) {
+								Database.addItemToOrder(item.getValue(), item.getKey());
 							}
-							dispose();
-						}
-					});
-					addButton.setActionCommand("Add");
-					{
-						JButton cancelButton = new JButton("Cancel");
-						buttonPane.add(cancelButton);
-						cancelButton.addActionListener(new ActionListener() {
-							public void actionPerformed(ActionEvent e) {
-								dispose();
-							}
-						});
-						cancelButton.setActionCommand("Cancel");
+
+							itemsToAddToOrder.clear();
+							break;
+						case 3:
+							Database.addClient(clientFirstNameTextField.getText(), clientLastNameTextField.getText(),
+									clientPhoneTextField.getText(), clientAddressTextField.getText(),
+									clientEmailTextField.getText());
+							break;
+						default:
+							System.out.println("Error!");
 					}
+					dispose();
+				}
+			});
+			addButton.setActionCommand("Add");
+			{
+				JButton cancelButton = new JButton("Cancel");
+				buttonPane.add(cancelButton);
+				cancelButton.addActionListener(new ActionListener() {
+					public void actionPerformed(ActionEvent e) {
+						dispose();
+					}
+				});
+				cancelButton.setActionCommand("Cancel");
+			}
 		}
 	}
 }
