@@ -9,26 +9,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.StringJoiner;
 import java.util.Vector;
+import java.time.format.DateTimeFormatter;  
+import java.time.LocalDateTime;
 
 public class Database {
 	private static Connection con;
 
 	public static void main() {
-		/*
-		 * System.out.
-		 * println("Sprawdzenie czy sterownik jest zarejestrowany w menadzerze");
-		 * try {
-		 * Class.forName("org.postgresql.Driver");
-		 * } catch (ClassNotFoundException cnfe) {
-		 * System.out.println("Nie znaleziono sterownika!");
-		 * System.out.println("Wyduk sledzenia bledu i zakonczenie.");
-		 * cnfe.printStackTrace();
-		 * System.exit(1);
-		 * }
-		 * System.out.
-		 * println("Zarejstrowano sterownik - OK, kolejny krok nawiazanie polaczenia z baza danych."
-		 * );
-		 */
+
 	}
 
 	public static boolean connectToDb() {
@@ -419,14 +407,14 @@ public class Database {
 
 	public static void addOrder(String productName, int quantity, String client, String status) {
 		try {
-			PreparedStatement pst = con.prepareStatement("SELECT COUNT(*) FROM Orders;",
+			PreparedStatement pst = con.prepareStatement("SELECT MAX(order_id) FROM Orders;",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs;
 			rs = pst.executeQuery();
 			int orderId = 1;
 			while (rs.next()) {
-				orderId = rs.getInt("count") + 1;
+				orderId = rs.getInt("max") + 1;
 			}
 
 			String[] splitedClientName = client.split(" ");
@@ -442,17 +430,19 @@ public class Database {
 				clientId = rs.getInt("customer_id");
 			}
 			rs.close();
-
+			 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");  
+			LocalDateTime now = LocalDateTime.now();  
 			pst = con.prepareStatement(
-					"INSERT INTO Project.ORDERS(ORDER_ID, CUSTOMER_ID, NUMBER, DATE, TOTAL_AMOUNT, STATUS) VALUES (?, ?, ?, TO_DATE('17/12/2015', 'DD/MM/YYYY'), ?, ?); ",
+					"INSERT INTO Project.ORDERS(ORDER_ID, CUSTOMER_ID, NUMBER, DATE, TOTAL_AMOUNT, STATUS) VALUES (?, ?, ?, TO_DATE(?, 'DD/MM/YYYY'), ?, ?); ",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 
 			pst.setInt(1, orderId);
 			pst.setInt(2, clientId);
-			pst.setString(3, "123123/123123");
-			pst.setFloat(4, 1231.23f);
-			pst.setString(5, status);
+			pst.setString(3, "123/123");
+			pst.setString(4, dtf.format(now));
+			pst.setFloat(5, 0.0f);
+			pst.setString(6, status);
 
 			pst.executeUpdate();
 
