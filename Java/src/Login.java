@@ -38,7 +38,9 @@ public class Login extends JFrame {
 			public void run() {
 				try {
 					frame = new Login();
+					Database.connectToDb();
 					frame.setVisible(true);
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -53,7 +55,7 @@ public class Login extends JFrame {
 	 */
 	public Login() {
 
-		setTitle("Warehouse Panel Logowania");
+		setTitle("Panel Logowania");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -110,10 +112,9 @@ public class Login extends JFrame {
 				String user = usernameTextField.getText();
 				String pass = String.valueOf(passwordTextField.getPassword());
 
-				Database.connectToDb();
+				
 
 				if (Database.login(user, pass)) {
-					// JOptionPane.showMessageDialog(getContentPane(), "Pomyślnie zalogowano!");
 					userLoged = true;
 					frame.setVisible(false);
 					MainWindow.main(null);
@@ -124,6 +125,15 @@ public class Login extends JFrame {
 		});
 		signinButton.setBounds(19, 176, 195, 29);
 		panel_1.add(signinButton);
+		
+		JButton btnDodajUywkownika = new JButton("Dodaj Użytkownika");
+		btnDodajUywkownika.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				AddUser.main(null);
+			}
+		});
+		btnDodajUywkownika.setBounds(19, 215, 195, 29);
+		panel_1.add(btnDodajUywkownika);
 	}
 
 	public static boolean userLogedIn() {

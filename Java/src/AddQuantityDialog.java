@@ -43,7 +43,7 @@ public class AddQuantityDialog extends JDialog {
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		{
-			addQuantityLabel = new JLabel("Quantity");
+			addQuantityLabel = new JLabel("Ilość");
 			addQuantityLabel.setBounds(38, 37, 61, 16);
 			contentPanel.add(addQuantityLabel);
 		}
@@ -74,13 +74,13 @@ public class AddQuantityDialog extends JDialog {
 				getRootPane().setDefaultButton(okButton);
 			}
 			{
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton("");
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
 					}
 				});
-				cancelButton.setActionCommand("Cancel");
+				cancelButton.setActionCommand("Anuluj");
 				buttonPane.add(cancelButton);
 			}
 		}

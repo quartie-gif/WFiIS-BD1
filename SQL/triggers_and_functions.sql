@@ -64,15 +64,15 @@ CREATE TRIGGER new_total_amount
 
 CREATE OR REPLACE FUNCTION Project.credit_after_removing_order() RETURNS TRIGGER AS $$
     BEGIN
-
-        IF OLD.ORDER_ID = 1 THEN
-            UPDATE Project.CUSTOMERS
+    
+        IF (SELECT COUNT(OLD.ORDER_ID) FROM Project.Orders) = 0 THEN
+            UPDATE Project.CUSTOMERS C
             SET CREDIT = 0
-            WHERE CUSTOMER_ID = OLD.CUSTOMER_ID ;
+            WHERE coalesce(C.CUSTOMER_ID, 0) = coalesce(OLD.CUSTOMER_ID, 0);
             return OLD;
         END IF;
         UPDATE Project.CUSTOMERS
-        SET CREDIT = (SELECT SUM(TOTAL_AMOUNT) FROM Project.ORDERS O WHERE coalesce(O.CUSTOMER_ID, 0) = coalesce(OLD.CUSTOMER_ID, 0) LIMIT 1)
+        SET CREDIT = (SELECT coalesce(SUM(TOTAL_AMOUNT), 0) FROM Project.ORDERS O WHERE coalesce(O.CUSTOMER_ID, 0) = coalesce(OLD.CUSTOMER_ID, 0) LIMIT 1)
         WHERE CUSTOMER_ID = OLD.CUSTOMER_ID ;
         RETURN OLD;
     END;
@@ -82,3 +82,11 @@ CREATE TRIGGER after_delete_total_amount
     AFTER DELETE ON Project.ORDERS
     FOR EACH ROW EXECUTE PROCEDURE Project.credit_after_removing_order();
 
+
+CREATE OR REPLACE FUNCTION Project.count_employees()
+(int, int) RETURNS int AS $body$
+SELECT *
+FROM lab04.uczestnik
+WHERE id_uczestnik BETWEEN $1 AND $2
+;
+$body$ LANGUAGE SQL;

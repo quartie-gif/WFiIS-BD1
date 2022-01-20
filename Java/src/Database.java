@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 
 public class Database {
 	private static Connection con;
-
+	public static int userId;
 	public static void main() {
 
 	}
@@ -46,15 +46,15 @@ public class Database {
 	public static boolean login(String user, String pass) {
 
 		try {
-			PreparedStatement pst = con.prepareStatement("SELECT U.LOGIN, U.PASSWORD FROM Project.USERS U;",
+			PreparedStatement pst = con.prepareStatement("SELECT U.USER_ID, U.LOGIN, U.PASSWORD FROM Project.USERS U;",
 					ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 			ResultSet rs = pst.executeQuery();
 			while (rs.next()) {
+				int newUserId= rs.getInt("user_id");
 				String login = rs.getString("login");
 				String password = rs.getString("password");
 				if (user.equals(login) && pass.equals(password)) {
-					System.out.print("Zwrocone kolumny  ");
-					System.out.println(login + "\t" + password);
+					Database.userId = newUserId;
 					return true;
 				}
 			}
@@ -73,8 +73,9 @@ public class Database {
 	public static void getProducts() {
 		try {
 
-			PreparedStatement pst = con.prepareStatement("SELECT * FROM PRODUCTS;", ResultSet.TYPE_SCROLL_SENSITIVE,
+			PreparedStatement pst = con.prepareStatement("SELECT * FROM PRODUCTS WHERE USER_ID = ?;", ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
+					pst.setInt(1, userId);
 			ResultSet rs = pst.executeQuery();
 			MainWindow.tableModel.setRowCount(0);
 			while (rs.next()) {
@@ -155,8 +156,9 @@ public class Database {
 	public static void getEmployees() {
 		try {
 
-			PreparedStatement pst = con.prepareStatement("SELECT * FROM EMPLOYEES;", ResultSet.TYPE_SCROLL_SENSITIVE,
+			PreparedStatement pst = con.prepareStatement("SELECT * FROM EMPLOYEES WHERE USER_ID = ?;", ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
+					pst.setInt(1, userId);
 			ResultSet rs = pst.executeQuery();
 			MainWindow.tableModel.setRowCount(0);
 			while (rs.next()) {
@@ -172,6 +174,37 @@ public class Database {
 				MainWindow.tableModel.setColumnIdentifiers(header);
 
 				MainWindow.tableModel.addRow(new String[] { employee_id, first_name, last_name, warehouse_name });
+				MainWindow.tableModel.fireTableDataChanged();
+
+			}
+
+			rs.close();
+			pst.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void getUsers() {
+		try {
+
+			PreparedStatement pst = con.prepareStatement("SELECT USER_ID, LOGIN FROM Project.USERS", ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs = pst.executeQuery();
+			MainWindow.tableModel.setRowCount(0);
+			while (rs.next()) {
+				String user_id = rs.getString("user_id");
+				String login = rs.getString("login");
+
+				// add header of the table
+				String header[] = new String[] { "ID", "LOGIN" };
+
+				// add header to the table model
+				MainWindow.tableModel.setColumnIdentifiers(header);
+
+				MainWindow.tableModel.addRow(new String[] {user_id, login});
 				MainWindow.tableModel.fireTableDataChanged();
 
 			}
@@ -208,6 +241,39 @@ public class Database {
 
 				MainWindow.tableModel
 						.addRow(new String[] { client_id, first_name, last_name, phone, address, email, credit });
+				MainWindow.tableModel.fireTableDataChanged();
+
+			}
+
+			rs.close();
+			pst.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void getWarehousesWithLocations() {
+		try {
+			PreparedStatement pst = con.prepareStatement("SELECT WAREHOUSE_NAME, CITY, COUNTRY, POSTAL_CODE FROM Project.WAREHOUSES W LEFT JOIN Project.LOCATIONS L ON L.LOCATION_ID = W.LOCATION_ID;", ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs = pst.executeQuery();
+			MainWindow.tableModel.setRowCount(0);
+			while (rs.next()) {
+				String warehouse_name = rs.getString("warehouse_name");
+				String city = rs.getString("city");
+				String country = rs.getString("country");
+				String postal_code = rs.getString("postal_code");
+
+				// add header of the table
+				String header[] = new String[] { "NAZWA", "MIASTO", "PAŃSTWO", "KOD POCZTOWY"};
+
+				// add header to the table model
+				MainWindow.tableModel.setColumnIdentifiers(header);
+
+				MainWindow.tableModel
+						.addRow(new String[] { warehouse_name, city, country, postal_code });
 				MainWindow.tableModel.fireTableDataChanged();
 
 			}
@@ -291,7 +357,6 @@ public class Database {
 			while (rs.next()) {
 				String warehouse_name = rs.getString("warehouse_name");
 				comboBoxItems.add(warehouse_name);
-				System.out.println(warehouse_name);
 			}
 
 			rs.close();
@@ -475,8 +540,6 @@ public class Database {
 					"INSERT INTO Project.PRODUCTS(PRODUCT_ID, CATEGORY_ID, PRODUCT_NAME, DESCRIPTION, COST, PRICE) VALUES(?, ?, ?, ?, ?, ?); ",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
-
-			System.out.println("Category index:" + warehouseId);
 			pst.setInt(1, productId);
 			pst.setInt(2, categoryId + 1);
 			pst.setString(3, name);
@@ -536,8 +599,6 @@ public class Database {
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 
-			System.out.println("Contact index:" + contactId);
-			System.out.println("Client index:" + clientId);
 			pst.setInt(1, contactId);
 			pst.setInt(2, clientId);
 			pst.setString(3, firstName);
@@ -557,9 +618,127 @@ public class Database {
 		}
 	}
 
+	public static void addWarehouseWithLocation(String name, String address, String postalCode, String city, String country) {
+		try {
+
+			PreparedStatement pst = con.prepareStatement("SELECT MAX(WAREHOUSE_ID) FROM Project.WAREHOUSES",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs;
+			rs = pst.executeQuery();
+			int warehouse_id = 1;
+
+			while (rs.next()) {
+				warehouse_id = rs.getInt("max") + 1;
+			}
+			rs.close();
+
+
+			pst = con.prepareStatement(
+				"INSERT INTO Project.LOCATIONS(LOCATION_ID, ADDRESS, POSTAL_CODE, CITY, COUNTRY) VALUES (?, ?, ?, ?, ?); ",
+				ResultSet.TYPE_SCROLL_SENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
+
+			pst.setInt(1, warehouse_id);
+			pst.setString(2, address);
+			pst.setString(3, postalCode);
+			pst.setString(4, city);
+			pst.setString(5, country);
+			pst.executeUpdate();
+
+
+			pst = con.prepareStatement(
+					"INSERT INTO Project.WAREHOUSES(WAREHOUSE_ID, USER_ID, LOCATION_ID, WAREHOUSE_NAME) VALUES (?, ?, ?, ?); ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+			pst.setInt(1, warehouse_id);
+			pst.setInt(2, userId);
+			pst.setInt(3, warehouse_id);
+			pst.setString(4, name);
+			pst.executeUpdate();
+
+
+			MainWindow.tableModel.fireTableDataChanged();
+
+			pst.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public static void addUser(String login, String password) {
+		try {
+
+			PreparedStatement pst = con.prepareStatement("SELECT MAX(USER_ID) FROM Project.USERS; ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs;
+			rs = pst.executeQuery();
+			int userId = 1;
+
+			while (rs.next()) {
+				userId = rs.getInt("MAX") + 1;
+			}
+
+			rs.close();
+
+			pst = con.prepareStatement(
+					"INSERT INTO Project.USERS(USER_ID, LOGIN, PASSWORD) VALUES (?, ?, ?); ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+
+			pst.setInt(1, userId);
+			pst.setString(2, login);
+			pst.setString(3, password);
+
+			pst.executeUpdate();
+
+			pst.close();
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+
 	public static void deleteClient(int clientId) {
 		try {
 			PreparedStatement pst = con.prepareStatement("DELETE FROM Project.CONTACTS WHERE CUSTOMER_ID = ?;",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			pst.setInt(1, clientId);
+			pst.executeUpdate();
+
+			Vector<Integer> ordersToDelete = new Vector<Integer>();
+			pst = con.prepareStatement("SELECT ORDER_ID FROM ORDERS O WHERE O.CUSTOMER_ID = ?;  ",
+					ResultSet.TYPE_SCROLL_SENSITIVE,
+					ResultSet.CONCUR_UPDATABLE);
+			pst.setInt(1, clientId);
+			ResultSet rs;
+			rs = pst.executeQuery();
+
+			while (rs.next()) {
+				ordersToDelete.add(rs.getInt("order_id"));
+			}
+
+			rs.close();
+			for (Integer number : ordersToDelete) { 
+				System.out.println(number);
+			}
+			while(!ordersToDelete.isEmpty()){
+				System.out.println("Usunieto item");
+				pst = con.prepareStatement("DELETE FROM Project.ORDER_ITEM WHERE ORDER_ID = ?;",
+				ResultSet.TYPE_SCROLL_SENSITIVE,
+				ResultSet.CONCUR_UPDATABLE);
+				pst.setInt(1, ordersToDelete.remove(ordersToDelete.size() - 1));
+				pst.executeUpdate();
+			}
+
+			pst = con.prepareStatement("DELETE FROM Project.ORDERS WHERE CUSTOMER_ID = ?;",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
 					ResultSet.CONCUR_UPDATABLE);
 			pst.setInt(1, clientId);
@@ -629,9 +808,6 @@ public class Database {
 	public static void deleteProduct(String productName, String warehouseName, String description) {
 		try {
 			// Get an index of product
-			System.out.println(productName);
-			System.out.println(warehouseName);
-			System.out.println(description);
 			PreparedStatement pst = con.prepareStatement(
 					"SELECT P.PRODUCT_ID, W.WAREHOUSE_ID FROM Project.PRODUCTS_IN_WAREHOUSES PW LEFT JOIN Project.WAREHOUSES W ON W.WAREHOUSE_ID = PW.WAREHOUSE_ID LEFT JOIN Project.PRODUCTS P ON P.PRODUCT_ID = PW.PRODUCT_ID WHERE W.WAREHOUSE_NAME = ? and P.PRODUCT_NAME = ? and P.DESCRIPTION = ?;",
 					ResultSet.TYPE_SCROLL_SENSITIVE,
@@ -655,7 +831,7 @@ public class Database {
 			pst.setInt(1, productId);
 			pst.setInt(2, warehouseId);
 			pst.executeUpdate();
-
+			
 			MainWindow.tableModel.fireTableDataChanged();
 			pst.close();
 		} catch (SQLException e) {
@@ -672,7 +848,6 @@ public class Database {
 			for (int column = 0; column < MainWindow.tableModel.getColumnCount(); column++) {
 				joiner.add(String.format("%-25s",MainWindow.tableModel.getColumnName(column)));
 			}
-			System.out.println(joiner.toString());
 			bw.write(joiner.toString());
 			bw.newLine();
 			bw.newLine();
@@ -683,15 +858,83 @@ public class Database {
 					String value = tableItem == null ? "null" : tableItem.toString();
 					joiner.add(String.format("%-25s",value));
 				}
-				System.out.println( Database.centerString(25, joiner.toString()));
 				bw.write(Database.centerString(25, joiner.toString()));
 				bw.newLine();
 			}
 			bw.close();
+			BufferedWriter bw2 = new BufferedWriter(new FileWriter(new File("./raports/PasswordsAndLogins.txt")));
+
+			//From views raports
+			PreparedStatement pst = con.prepareStatement("SELECT LOGIN, PASSWORD FROM Project.USERS",
+			ResultSet.TYPE_SCROLL_SENSITIVE,
+			ResultSet.CONCUR_UPDATABLE);
+			ResultSet rs = pst.executeQuery();
+			joiner = new StringJoiner("");
+			joiner.add(String.format("%-25s","LOGIN"));
+			joiner.add(String.format("%-25s","PASSWORD"));
+			bw2.write(Database.centerString(25, joiner.toString()));
+			bw2.newLine();
+			bw2.newLine();
+			while (rs.next()) {
+				joiner = new StringJoiner("");
+				joiner.add(String.format("%-25s",rs.getString("login")));
+				joiner.add(String.format("%-25s",rs.getString("password")));
+				bw2.write(Database.centerString(25, joiner.toString()));
+				bw2.newLine();
+			}
+			bw2.close();
+
+			BufferedWriter bw3 = new BufferedWriter(new FileWriter(new File("./raports/OrdersAndTotalSum.txt")));
+
+			//From views raports
+			pst = con.prepareStatement("SELECT * FROM orders_with_amount",
+			ResultSet.TYPE_SCROLL_SENSITIVE,
+			ResultSet.CONCUR_UPDATABLE);
+			rs = pst.executeQuery();
+			joiner = new StringJoiner("");
+			joiner.add(String.format("%-25s","NUMER ZAMOWIENIA"));
+			joiner.add(String.format("%-25s","CALKOWITA WARTOSC"));
+			bw3.write(Database.centerString(25, joiner.toString()));
+			bw3.newLine();
+			bw3.newLine();
+			while (rs.next()) {
+				joiner = new StringJoiner("");
+				joiner.add(String.format("%-25s",rs.getString("numer_zamowienia")));
+				joiner.add(String.format("%-25s",rs.getString("calkowita_wartosc")));
+				bw3.write(Database.centerString(25, joiner.toString()));
+				bw3.newLine();
+			}
+			bw3.close();
+
+
+			BufferedWriter bw4 = new BufferedWriter(new FileWriter(new File("./raports/Categories.txt")));
+
+			//From views raports
+			pst = con.prepareStatement("SELECT * FROM Project.product_categories",
+			ResultSet.TYPE_SCROLL_SENSITIVE,
+			ResultSet.CONCUR_UPDATABLE);
+			rs = pst.executeQuery();
+			joiner = new StringJoiner("");
+			joiner.add(String.format("%-25s","Kategorie"));
+			bw4.write(Database.centerString(25, joiner.toString()));
+			bw4.newLine();
+			bw4.newLine();
+			while (rs.next()) {
+				joiner = new StringJoiner("");
+				joiner.add(String.format("%-25s",rs.getString("category_name")));
+				bw4.write(Database.centerString(25, joiner.toString()));
+				bw4.newLine();
+			}
+			bw4.close();
+
+			pst.close();
+			rs.close();
+
 		} catch (IOException exp) {
 			exp.printStackTrace();
+		} catch (SQLException exp) {
+			exp.printStackTrace();
 		}
-
 	}
 	public static String centerString (int width, String s) {
 		return String.format("%-" + width  + "s", String.format("%" + (s.length() + (width - s.length()) / 2) + "s", s));

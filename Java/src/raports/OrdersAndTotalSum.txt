@@ -1,0 +1,3 @@
+NUMER ZAMOWIENIA         CALKOWITA WARTOSC        
+
+123/123                  35                       

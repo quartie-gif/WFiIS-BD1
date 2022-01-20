@@ -1,10 +1,8 @@
-ID                       IMIĘ                     NAZWISKO                 TELEFON                  EMAIL                    ADRES                    KREDYT                   
+ID                       NAZWA PRODUKTU           OPIS                     MAGAZYN                  ILOŚĆ                    
 
-1                        Karol                    Nowy                     733-879-325              ul. Profesora Paszkowskiego Wacława 26 02-507 Warszawakarol.nowy@temp.pl       155                      
-2                        Paweł                    Stanley                  732-879-325              LEA 114a                 TEMP@TEMP.PL             0                        
-3                        Marek                    Kokorajko                733-879-325              LEA 114a                 TEMP@TEMP.PL             0                        
-4                        Robert                   Szajko                   734-879-325              LEA 114a                 TEMP@TEMP.PL             0                        
-5                        Stanisław                Patrek                   123-879-325              LEA 114a                 TEMP@TEMP.PL             0                        
-6                        Karol                    Kundera                  733-873-325              LEA 114a                 TEMP@TEMP.PL             0                        
-7                        Paweł                    Noga                     741-879-415              LEA 114a                 TEMP@TEMP.PL             0                        
-8                        Ewa                      Kowal                    732-329-325              LEA 114a                 TEMP@TEMP.PL             0                        
+1                        WELNA ROCKWOOL 12CM      WELNA SKALNA             Filar                    500                      
+2                        WELNA ROCKWOOL 15CM      WELNA SKALNA             Filar                    600                      
+3                        WELNA ROCKWOOL 16CM      WELNA SKALNA             Filar                    500                      
+4                        WELNA ROCKWOOL 20CM      WELNA SKALNA             Filar                    1200                     
+5                        WELNA ROCKWOOL 22CM      WELNA SKALNA             Filar                    300                      
+7                        WELNA ROCKWOOL 35CM      WELNA SKALNA             Filar                    1200                     

@@ -13,6 +13,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.JOptionPane;
 
 public class MainWindow {
 
@@ -123,9 +124,31 @@ public class MainWindow {
 				Database.getClients();
 			}
 		});
+		
+		JButton btnNewButton_3_1 = new JButton("Uzytkownicy");
+		btnNewButton_3_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				lastClickedButton = "Uzytkownicy";
+				Database.getUsers();
+			}
+		});
+		btnNewButton_3_1.setOpaque(true);
+		btnNewButton_3_1.setBackground(new Color(205, 133, 63));
+		panel_2.add(btnNewButton_3_1);
 		btnNewButton_3.setBackground(new Color(205, 133, 63));
 		btnNewButton_3.setOpaque(true);
 		panel_2.add(btnNewButton_3);
+		
+		JButton btnNewButton_3_2 = new JButton("Magazyny");
+		btnNewButton_3_2.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				lastClickedButton = "Magazyny";
+				Database.getWarehousesWithLocations();
+			}
+		});
+		btnNewButton_3_2.setOpaque(true);
+		btnNewButton_3_2.setBackground(new Color(205, 133, 63));
+		panel_2.add(btnNewButton_3_2);
 
 		JPanel panel_3 = new JPanel();
 		panel_3.setBounds(909, 6, 164, 574);
@@ -191,12 +214,27 @@ public class MainWindow {
 					case "Klienci":
 						Database.generateRaport();
 						break;
+					case "Uzytkownicy":
+						Database.generateRaport();
+						break;
+					case "Magazyny":
+						Database.generateRaport();
+						break;
 					default:
-						System.out.println("Error checking last clicked button!");
+						Database.generateRaport();
 				}
 			}
 		});
 		panel_3.add(editButton);
+		
+		JButton buttonDodajMagazyn = new JButton("Dodaj Magazyn");
+		buttonDodajMagazyn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				addWarehouse.main(null);
+			}
+		});
+		buttonDodajMagazyn.setBounds(6, 430, 152, 41);
+		panel_3.add(buttonDodajMagazyn);
 	}
 
 }

@@ -21,6 +21,7 @@ import java.util.Vector;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javafx.util.Pair;
+import javax.swing.JOptionPane;
 
 @SuppressWarnings("serial")
 public class AddDialog extends JDialog {
@@ -271,7 +272,7 @@ public class AddDialog extends JDialog {
 		orderItemList = new JList<String>(Database.getProductsNames());
 		orderScrollPane.setViewportView(orderItemList);
 
-		JButton orderAddItemButton = new JButton("Add Item");
+		JButton orderAddItemButton = new JButton("Dodaj");
 		orderAddItemButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
@@ -362,7 +363,7 @@ public class AddDialog extends JDialog {
 			getContentPane().add(buttonPane);
 			buttonPane.setLayout(new GridLayout(0, 2, 0, 0));
 
-			JButton addButton = new JButton("Add");
+			JButton addButton = new JButton("Dodaj");
 			buttonPane.add(addButton);
 			addButton.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
@@ -400,21 +401,21 @@ public class AddDialog extends JDialog {
 									clientEmailTextField.getText());
 							break;
 						default:
-							System.out.println("Error!");
+							JOptionPane.showMessageDialog(getContentPane(), "Error! Coś poszło nie tak.");
 					}
 					dispose();
 				}
 			});
-			addButton.setActionCommand("Add");
+			addButton.setActionCommand("Dodaj");
 			{
-				JButton cancelButton = new JButton("Cancel");
+				JButton cancelButton = new JButton("Anuluj");
 				buttonPane.add(cancelButton);
 				cancelButton.addActionListener(new ActionListener() {
 					public void actionPerformed(ActionEvent e) {
 						dispose();
 					}
 				});
-				cancelButton.setActionCommand("Cancel");
+				cancelButton.setActionCommand("Anuluj");
 			}
 		}
 	}
